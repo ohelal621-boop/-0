@@ -3,141 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حلول للتحول الرقمي والبرمجيات</title>
+    <title>OM Zone | حلول التحول الرقمي والأنظمة الذكية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Tajawal', sans-serif; }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+        }
+        /* خلفية اللابتوب والنظام */
+        .hero-bg {
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.95)), 
+                              url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* إضاءات خطوط برتقالية تتوهج */
+        .orange-glow {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950">
 
-    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-amber-500/20 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2 text-2xl font-extrabold text-indigo-500">
-                <span>⚡ DevTech Solutions</span>
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-amber-500 to-orange-600 text-slate-950 font-black text-xl px-3 py-1 rounded-xl shadow-lg shadow-amber-500/20">
+                    OM
+                </div>
+                <span class="text-2xl font-black tracking-wider text-white">
+                    OM <span class="text-amber-500">ZONE</span>
+                </span>
             </div>
+
             <nav class="hidden md:flex gap-8 font-medium text-slate-300">
-                <a href="#" class="hover:text-indigo-400 transition">الرئيسية</a>
-                <a href="#services" class="hover:text-indigo-400 transition">الخدمات</a>
-                <a href="#portfolio" class="hover:text-indigo-400 transition">أعمالنا</a>
-                <a href="#about" class="hover:text-indigo-400 transition">من نحن</a>
-                <a href="#blog" class="hover:text-indigo-400 transition">المدونة</a>
+                <a href="#" class="hover:text-amber-400 transition">الرئيسية</a>
+                <a href="#services" class="hover:text-amber-400 transition">الخدمات</a>
+                <a href="#crm-preview" class="hover:text-amber-400 transition">نظام CRM</a>
+                <a href="#portfolio" class="hover:text-amber-400 transition">أعمالنا</a>
+                <a href="#contact" class="hover:text-amber-400 transition">تواصل معنا</a>
             </nav>
-            <a href="#contact" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-600/30">
+
+            <a href="#contact" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-amber-500/20 border border-amber-400/30">
                 ابدأ مشروعك
             </a>
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-6 py-20 text-center">
-        <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-4 py-1.5 rounded-full text-sm font-semibold inline-block mb-6">
-            🚀 شركاؤك في التحول الرقمي وتطوير الأنظمة
-        </span>
-        <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6">
-            نحول أفكارك إلى <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">حلول برمجية ذكية</span>
-        </h1>
-        <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-10">
-            نقدم أفضل الأنظمة المخصصة (CRM, POS, HR)، تطوير المواقع والتطبيقات، وتهيئة محركات البحث لمساعدة عملك على النمو والتوسع.
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-            <a href="#qr-tool" class="bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:opacity-90 transition">
-                جرب أداة الـ QR Code مجاناً
-            </a>
-            <a href="#services" class="border border-slate-700 hover:border-slate-500 text-slate-300 px-8 py-4 rounded-xl font-bold transition">
-                استكشف خدماتنا
-            </a>
+    <section class="hero-bg relative min-h-[85vh] flex items-center justify-center px-6 py-20 border-b border-amber-500/20">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <span class="bg-blue-950/80 text-amber-400 border border-amber-500/40 px-5 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2 mb-8 backdrop-blur-md orange-glow">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                منظومة OM ZONE المتكاملة للحلول البرمجية
+            </span>
+
+            <h1 class="text-4xl md:text-7xl font-black leading-tight mb-8">
+                نصمم مستقبل أعمالك مع <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-400 to-orange-500">
+                    أنظمة OM ZONE الذكية
+                </span>
+            </h1>
+
+            <p class="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+                منصة متخصصة في تطوير أنظمة إدارة العملاء (CRM)، نقاط البيع (POS)، وتطبيقات المواقع بأحدث التقنيات مع تصميم زجاجي عصري وأداء فائق السرعة.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-5">
+                <a href="#contact" class="bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-extrabold px-9 py-4 rounded-xl shadow-xl hover:scale-105 transition border border-amber-300/40 orange-glow">
+                    استكشف نظام CRM
+                </a>
+                <a href="#qr-tool" class="bg-blue-950/60 hover:bg-blue-900/60 text-amber-400 border border-amber-500/30 px-9 py-4 rounded-xl font-bold backdrop-blur-md transition">
+                    أداة الـ QR Code
+                </a>
+            </div>
+        </div>
+
+        <div id="crm-preview" class="absolute -bottom-16 left-1/2 -translate-x-1/2 w-11/12 max-w-4xl hidden lg:block">
+            <div class="bg-slate-900/90 border-2 border-amber-500/40 rounded-2xl p-4 backdrop-blur-xl shadow-2xl orange-glow">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                    </div>
+                    <div class="text-xs font-mono text-amber-400/80 bg-slate-950 px-4 py-1 rounded-full border border-amber-500/20">
+                        https://crm.omzone.solutions
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-between items-center text-xs text-slate-400">
+                    <span class="text-amber-400 font-bold">لوحة تحكم OM ZONE CRM</span>
+                    <span>المبيعات النشطة: +148% 🚀</span>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section id="qr-tool" class="max-w-4xl mx-auto px-6 py-12 my-10 bg-slate-800/50 border border-slate-700/50 rounded-3xl backdrop-blur">
+    <section id="qr-tool" class="max-w-4xl mx-auto px-6 py-12 my-20 bg-blue-950/30 border border-amber-500/30 rounded-3xl backdrop-blur-xl orange-glow relative">
         <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold mb-2">📱 صانع الـ QR Code التفاعلي</h2>
-            <p class="text-slate-400 text-sm">أنشئ رمز QR مجاناً لموقعك أو أعمالك بسهولة</p>
+            <h2 class="text-2xl font-bold mb-2 text-white">📱 صانع الـ QR Code من <span class="text-amber-500">OM Zone</span></h2>
+            <p class="text-slate-400 text-sm">أنشئ رموز التتبع لعلامتك التجارية مجاناً وبسهولة</p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-8 items-center">
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium mb-2 text-slate-300">الرابط أو النص المطلوب:</label>
-                    <input type="text" id="qr-input" placeholder="https://yourwebsite.com" 
-                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition">
+                    <input type="text" id="qr-input" placeholder="https://omzone.solutions" 
+                           class="w-full bg-slate-900/90 border border-amber-500/30 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-amber-500 transition">
                 </div>
                 
-                <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-xl">
+                <div class="bg-blue-950/50 border border-amber-500/30 p-4 rounded-xl">
                     <div class="flex items-center justify-between">
                         <div>
-                            <span class="text-xs font-bold bg-indigo-500 text-white px-2 py-0.5 rounded">PRO</span>
-                            <span class="text-sm font-bold mr-2 text-indigo-300">Dynamic QR Code</span>
+                            <span class="text-xs font-bold bg-amber-500 text-slate-950 px-2 py-0.5 rounded">PRO</span>
+                            <span class="text-sm font-bold mr-2 text-amber-300">Dynamic QR Code</span>
                         </div>
-                        <input type="checkbox" id="dynamic-toggle" class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                        <input type="checkbox" id="dynamic-toggle" class="w-4 h-4 accent-amber-500 cursor-pointer">
                     </div>
                     <p class="text-xs text-slate-400 mt-2">
-                        يتيح لك تغيير الرابط مستقبلاً دون تغيير الرمز المطبوع مع إحصائيات التتبع (يتطلب تسجيل حساب).
+                        يتيح لك ربط الرمز بنظام OM Zone CRM لتتبع التحليلات وتغيير الوجهة لاحقاً.
                     </p>
                 </div>
 
-                <button onclick="generateQRCode()" class="w-full bg-indigo-600 hover:bg-indigo-500 font-bold py-3 rounded-xl transition">
+                <button onclick="generateQRCode()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 border border-amber-300/30">
                     توليد الرمز الآن
                 </button>
             </div>
 
-            <div class="flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-slate-700/50 pt-6 md:pt-0">
-                <div id="qrcode" class="p-4 bg-white rounded-2xl shadow-xl flex items-center justify-center min-w-[180px] min-h-[180px]">
-                    </div>
-                <p class="text-xs text-slate-400 mt-4 text-center">قم بمسح الرمز للكشف عن الرابط</p>
+            <div class="flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-amber-500/20 pt-6 md:pt-0">
+                <div id="qrcode" class="p-4 bg-white rounded-2xl shadow-xl flex items-center justify-center min-w-[180px] min-h-[180px] border-2 border-amber-500/40">
+                </div>
+                <p class="text-xs text-slate-400 mt-4 text-center">قم بمسح الرمز لتجربة النظام</p>
             </div>
         </div>
     </section>
 
     <section id="services" class="max-w-7xl mx-auto px-6 py-16">
-        <h2 class="text-3xl font-bold text-center mb-12">خدماتنا التقنية المتكاملة</h2>
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold mb-3">حلول <span class="text-amber-500">OM Zone</span> البرمجية</h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-amber-500 to-orange-500 mx-auto rounded-full"></div>
+        </div>
+
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-2xl">
-                <div class="text-3xl mb-4">💻</div>
-                <h3 class="text-xl font-bold mb-2">تطوير المواقع والتطبيقات</h3>
-                <p class="text-slate-400 text-sm">بناء منصات فائقة السرعة معتمدة على Next.js وReact وتصميم متجاوب بالكامل.</p>
+            <div class="bg-blue-950/20 border border-amber-500/20 hover:border-amber-500/50 p-8 rounded-2xl backdrop-blur-md transition group">
+                <div class="text-4xl mb-4 text-amber-500">📊</div>
+                <h3 class="text-xl font-bold mb-3 group-hover:text-amber-400 transition">نظام OM Zone CRM</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">إدارة متكاملة لعملاء شركتك، تتبع المبيعات، والتقارير المباشرة لزيادة الأرباح.</p>
             </div>
-            <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-2xl">
-                <div class="text-3xl mb-4">⚙️</div>
-                <h3 class="text-xl font-bold mb-2">حلول إدارة الأعمال (CRM & POS)</h3>
-                <p class="text-slate-400 text-sm">أنظمة مخصصة لشبكات المبيعات والموارد البشرية ولوحات تحكم لإدارة أعمالك بفعالية.</p>
+
+            <div class="bg-blue-950/20 border border-amber-500/20 hover:border-amber-500/50 p-8 rounded-2xl backdrop-blur-md transition group">
+                <div class="text-4xl mb-4 text-amber-500">💻</div>
+                <h3 class="text-xl font-bold mb-3 group-hover:text-amber-400 transition">تطوير المواقع والمنصات</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">تطبيقات ويب متجاوبة وسريعة جداً مع تصاميم زجاجية حديثة تعكس قوة علامتك التجارية.</p>
             </div>
-            <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-2xl">
-                <div class="text-3xl mb-4">🚀</div>
-                <h3 class="text-xl font-bold mb-2">تحسين محركات البحث (SEO)</h3>
-                <p class="text-slate-400 text-sm">استراتيجيات On-Page وOff-Page لضمان تصدر موقعك لنتائج البحث الأولى.</p>
+
+            <div class="bg-blue-950/20 border border-amber-500/20 hover:border-amber-500/50 p-8 rounded-2xl backdrop-blur-md transition group">
+                <div class="text-4xl mb-4 text-amber-500">🚀</div>
+                <h3 class="text-xl font-bold mb-3 group-hover:text-amber-400 transition">حلول التجارة الإلكترونية</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">ربط المتاجر الإلكترونية بأنظمة الدفع، الشحن، وإدارة المخزون بدقة عالية.</p>
             </div>
         </div>
     </section>
 
     <section id="contact" class="max-w-3xl mx-auto px-6 py-16">
-        <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 p-8 rounded-3xl">
-            <h2 class="text-2xl font-bold text-center mb-2">احصل على استشارة مجانية لمشروعك</h2>
-            <p class="text-slate-400 text-center text-sm mb-6">اترك بياناتك وسيتواصل معك فريقنا التقني فوراً</p>
+        <div class="bg-slate-900/80 border border-amber-500/30 p-8 md:p-10 rounded-3xl backdrop-blur-xl orange-glow">
+            <h2 class="text-2xl font-bold text-center mb-2">انضم إلى عملاء <span class="text-amber-500">OM Zone</span></h2>
+            <p class="text-slate-400 text-center text-sm mb-8">اطلب استشارتك المجانية وابدأ التحول الرقمي لمشروعك الآن</p>
             
-            <form class="space-y-4" onsubmit="event.preventDefault(); alert('تم إرسال الطلب وربطه بنظام الـ CRM بنجاح!');">
+            <form class="space-y-4" onsubmit="event.preventDefault(); alert('تم إرسال الطلب وربطه بنظام OM Zone CRM بنجاح!');">
                 <div class="grid md:grid-cols-2 gap-4">
-                    <input type="text" placeholder="الاسم الكامل" required class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500">
-                    <input type="email" placeholder="البريد الإلكتروني" required class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500">
+                    <input type="text" placeholder="الاسم الكامل" required class="bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500 text-white">
+                    <input type="email" placeholder="البريد الإلكتروني" required class="bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500 text-white">
                 </div>
-                <select class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 focus:outline-none focus:border-indigo-500">
+                <select class="w-full bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 text-slate-400 focus:outline-none focus:border-amber-500">
                     <option>اختر الخدمة المطلوبة...</option>
-                    <option>نظام CRM / POS / HR</option>
-                    <option>تطوير موقع أو تطبيق</option>
-                    <option>خدمات UI/UX & SEO</option>
+                    <option>نظام OM Zone CRM / POS</option>
+                    <option>تطوير موقع أو تطبيق متكامل</option>
+                    <option>استشارة تحول رقمي</option>
                 </select>
-                <textarea rows="3" placeholder="تفاصيل إضافية عن مشروعك..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500"></textarea>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 font-bold py-3.5 rounded-xl transition shadow-lg shadow-indigo-600/30">
-                    إرسال الطلب
+                <textarea rows="3" placeholder="تفاصيل إضافية عن مشروعك..." class="w-full bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500 text-white"></textarea>
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-extrabold py-4 rounded-xl transition shadow-lg shadow-amber-500/20">
+                    إرسال الطلب لنظام CRM
                 </button>
             </form>
         </div>
     </section>
 
-    <footer class="border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
-        <p>© 2026 جميع الحقوق محفوظة لشركة DevTech Solutions.</p>
+    <footer class="border-t border-amber-500/20 py-8 text-center text-slate-500 text-sm bg-slate-950/80">
+        <p>© 2026 جميع الحقوق محفوظة لشركة <span class="text-amber-500 font-bold">OM Zone</span> Solutions.</p>
     </footer>
 
     <script>
@@ -154,7 +211,7 @@
             }
 
             if (isDynamic) {
-                alert('تنبيه: ميزة الـ Dynamic QR Code تتطلب تسجيل حساب لتتبع الإحصائيات وتحرير الرابط لاحقاً!');
+                alert('تنبيه: ميزة Dynamic QR مرتبطة بحسابك في منظومة OM Zone CRM!');
             }
 
             qrcodeContainer.innerHTML = "";
@@ -170,7 +227,7 @@
         }
 
         window.onload = function() {
-            document.getElementById('qr-input').value = "https://example.com";
+            document.getElementById('qr-input').value = "https://omzone.solutions";
             generateQRCode();
         };
     </script>
