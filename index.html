@@ -3,260 +3,1164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OM Zone | حلول التحول الرقمي والأنظمة الذكية</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <title>OM ZONE - نظامك الشامل للمذاكرة والإنجاز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Tajawal', sans-serif; 
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-purple: #a855f7;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --accent-yellow: #eab308;
+            --accent-teal: #14b8a6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
         }
 
-        /* خلفية نارية هادئة مع خطوط وتأثير شبكي مموج */
-        .hero-bg {
-            background: 
-                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 20% 80%, rgba(234, 88, 12, 0.08) 0%, transparent 40%),
-                linear-gradient(135deg, rgba(15, 23, 42, 0.97), rgba(2, 6, 23, 0.99)),
-                repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.03) 0px, rgba(245, 158, 11, 0.03) 2px, transparent 2px, transparent 20px),
-                repeating-linear-gradient(-45deg, rgba(234, 88, 12, 0.02) 0px, rgba(234, 88, 12, 0.02) 2px, transparent 2px, transparent 20px);
-            background-size: cover;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Views management */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+            font-weight: 800;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-right: 4px solid var(--accent-blue);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 0 auto 30px auto;
+            max-width: 800px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #e2e8f0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
         }
 
-        /* خطوط نار انسيابية متوهجة خلف العناصر */
-        .fiery-lines {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at center, transparent 30%, #020617 90%);
-            pointer-events: none;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* إضاءات خطوط برتقالية تتوهج */
-        .orange-glow {
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
         }
 
-        @keyframes firePulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
         }
 
-        .fire-flare {
-            animation: firePulse 4s infinite ease-in-out;
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            text-align: center;
+            background-color: var(--accent-blue);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-back {
+            background-color: #334155;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .card.habit-tracker { border-top: 4px solid var(--accent-green); }
+        .card.habit-tracker .btn { background-color: var(--accent-green); color: #000; }
+
+        .card.azkar { border-top: 4px solid var(--accent-teal); }
+        .card.azkar .btn { background-color: var(--accent-teal); color: #000; }
+
+        .card.revision { border-top: 4px solid var(--accent-yellow); }
+        .card.revision .btn { background-color: var(--accent-yellow); color: #000; }
+
+        .card.pomodoro { border-top: 4px solid var(--accent-red); }
+        .card.pomodoro .btn { background-color: var(--accent-red); color: #fff; }
+
+        .card.notebook { border-top: 4px solid var(--accent-orange); }
+        .card.notebook .btn { background-color: var(--accent-orange); color: #fff; }
+
+        /* Habit Tracker Styling */
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .habit-grid { grid-template-columns: 1fr; }
+        }
+
+        .habit-item {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .habit-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .habit-item.completed span {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .habit-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .add-habit-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .add-habit-box input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background-color: var(--card-bg);
+            color: #fff;
+        }
+
+        .habit-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .habit-actions .btn {
+            flex: 1;
+        }
+
+        .score-box {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--accent-green);
+        }
+
+        /* Azkar & Tasbeeh Styles */
+        .azkar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .azkar-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 4px solid var(--accent-teal);
+            text-align: right;
+        }
+
+        .zekr-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--accent-teal);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .fadl {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            background-color: rgba(15, 23, 42, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .azkar-btn-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .counter-btn {
+            background-color: var(--accent-teal);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+            flex: 1;
+        }
+
+        .counter-btn:disabled {
+            background-color: #334155;
+            color: var(--text-secondary);
+            cursor: default;
+        }
+
+        .reset-btn {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Revision & Notebook Styles */
+        .notebook-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .notebook-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .notebook-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-icon-btn {
+            background: #334155;
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-icon-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.2);
+        }
+
+        .btn-download-icon {
+            background-color: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .btn-open-icon {
+            background-color: rgba(234, 179, 8, 0.15);
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .page-editor {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .page-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-page-box {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .search-page-box input {
+            width: 80px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background-color: #0f172a;
+            color: #fff;
+            text-align: center;
+        }
+
+        textarea.editor-area {
+            width: 100%;
+            height: 550px;
+            background-color: #0f172a;
+            color: #fff;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            resize: vertical;
+        }
+
+        /* Pomodoro Layout Styles */
+        .pomodoro-container {
+            display: flex;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            align-items: stretch;
+        }
+
+        @media (max-width: 768px) {
+            .pomodoro-container {
+                flex-direction: column;
+            }
+        }
+
+        .pomodoro-box {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            margin: 15px 0;
+        }
+
+        .session-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .session-inputs input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background-color: #0f172a;
+            color: #fff;
+        }
+
+        .stats-side-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .sessions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .sessions-table-container {
+            max-width: 900px;
+            margin: 0 auto 25px auto;
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table.sessions-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        table.sessions-table th, table.sessions-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table.sessions-table th {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .status-completed {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .status-failed {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .stat-card.green { border-bottom: 4px solid var(--accent-green); }
+        .stat-card.red { border-bottom: 4px solid var(--accent-red); }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-card .count {
+            font-size: 2.2rem;
+            font-weight: 800;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950">
+<body>
 
-    <header class="border-b border-amber-500/20 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-amber-500 to-orange-600 text-slate-950 font-black text-xl px-3 py-1 rounded-xl shadow-lg shadow-amber-500/20">
-                    OM
-                </div>
-                <span class="text-2xl font-black tracking-wider text-white">
-                    OM <span class="text-amber-500">ZONE</span>
-                </span>
-            </div>
+    <div id="main-view" class="view active">
+        <header>
+            <h1>⚡ OM ZONE ⚡</h1>
+            <p>منصتك الشخصية الشاملة لإدارة المذاكرة والتطوير اليومي</p>
+        </header>
 
-            <nav class="hidden md:flex gap-8 font-medium text-slate-300">
-                <a href="#" class="hover:text-amber-400 transition">الرئيسية</a>
-                <a href="#services" class="hover:text-amber-400 transition">الخدمات</a>
-                <a href="#crm-preview" class="hover:text-amber-400 transition">نظام CRM</a>
-                <a href="#portfolio" class="hover:text-amber-400 transition">أعمالنا</a>
-                <a href="#contact" class="hover:text-amber-400 transition">تواصل معنا</a>
-            </nav>
-
-            <a href="#contact" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-amber-500/20 border border-amber-400/30">
-                ابدأ مشروعك
-            </a>
-        </div>
-    </header>
-
-    <section class="hero-bg relative min-h-[85vh] flex items-center justify-center px-6 py-16 border-b border-amber-500/20 overflow-hidden">
-        
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/60 to-transparent"></div>
-        <div class="fiery-lines"></div>
-
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-6">
-            
-            <div class="text-right">
-                <span class="bg-blue-950/80 text-amber-400 border border-amber-500/40 px-5 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2 mb-6 backdrop-blur-md orange-glow">
-                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                    منظومة OM ZONE المتكاملة للحلول البرمجية
-                </span>
-
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
-                    نصمم مستقبل أعمالك مع <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-red-500">
-                        أنظمة OM ZONE الذكية
-                    </span>
-                </h1>
-
-                <p class="text-slate-300 text-lg lg:text-xl max-w-xl mb-8 leading-relaxed font-light">
-                    منصة متخصصة في تطوير أنظمة إدارة العملاء (CRM)، نقاط البيع (POS)، وتطبيقات المواقع بأحدث التقنيات مع تصميم زجاجي عصري وأداء فائق السرعة.
-                </p>
-
-                <div class="flex flex-wrap gap-4">
-                    <a href="#contact" class="bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-extrabold px-8 py-4 rounded-xl shadow-xl hover:scale-105 transition border border-amber-300/40 orange-glow">
-                        استكشف نظام CRM
-                    </a>
-                    <a href="#qr-tool" class="bg-blue-950/60 hover:bg-blue-900/60 text-amber-400 border border-amber-500/30 px-8 py-4 rounded-xl font-bold backdrop-blur-md transition">
-                        أداة الـ QR Code
-                    </a>
-                </div>
-            </div>
-
-            <div class="relative flex justify-center items-center">
-                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur-xl opacity-30 fire-flare"></div>
-                
-                <div class="relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-900/80 p-2 orange-glow max-w-lg w-full">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop" 
-                         alt="OM Zone Dashboard Preview" 
-                         class="rounded-xl w-full h-auto object-cover border border-amber-500/10 shadow-2xl">
-
-                    <div class="mt-3 px-3 py-2 bg-slate-950/90 rounded-lg flex justify-between items-center text-xs text-slate-400 border border-amber-500/20">
-                        <span class="text-amber-400 font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span>
-                            لوحة تحكم OM ZONE CRM
-                        </span>
-                        <span>مبيعات نشطة: +148% 🚀</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="qr-tool" class="max-w-4xl mx-auto px-6 py-12 my-20 bg-blue-950/30 border border-amber-500/30 rounded-3xl backdrop-blur-xl orange-glow relative">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold mb-2 text-white">📱 صانع الـ QR Code من <span class="text-amber-500">OM Zone</span></h2>
-            <p class="text-slate-400 text-sm">أنشئ رموز التتبع لعلامتك التجارية مجاناً وبسهولة</p>
+        <div class="quote-box">
+            💡 "الاستمرارية هي السر.. إنجاز صغير كل يوم يحقق أهدافًا كبيرة."
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8 items-center">
-            <div class="space-y-4">
+        <main class="grid-container">
+            <div class="card habit-tracker">
                 <div>
-                    <label class="block text-sm font-medium mb-2 text-slate-300">الرابط أو النص المطلوب:</label>
-                    <input type="text" id="qr-input" placeholder="https://omzone.solutions" 
-                           class="w-full bg-slate-900/90 border border-amber-500/30 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                    <div class="card-icon">✅</div>
+                    <h2>Habit Tracker</h2>
+                    <p>متابع العادات اليومي. سجل أهدافك ومهماتك واستعرض تقييمك اليومي.</p>
                 </div>
+                <button onclick="switchView('habit-view')" class="btn">متابعة العادات</button>
+            </div>
+
+            <div class="card azkar">
+                <div>
+                    <div class="card-icon">📿</div>
+                    <h2>الأذكار والتسبيح</h2>
+                    <p>أذكار الصباح والمسبحة الإلكترونية التفاعلية لحفظ أذكارك اليومية بسهولة.</p>
+                </div>
+                <button onclick="switchView('azkar-view')" class="btn">فتح الأذكار</button>
+            </div>
+
+            <div class="card revision">
+                <div>
+                    <div class="card-icon">🎯</div>
+                    <h2>OM Revision</h2>
+                    <p>مراجعاتك السريعة! 4 كشاكيل تتيح لك 40 صفحة لكل منها لتسجيل كل ما تحتاج.</p>
+                </div>
+                <button onclick="switchView('revision-view')" class="btn">بدء المراجعة</button>
+            </div>
+
+            <div class="card pomodoro">
+                <div>
+                    <div class="card-icon">⏱️</div>
+                    <h2>OM Pomodoro</h2>
+                    <p>مؤقت التركيز الذكي. يعمل حتى عند تصفح مواقع أخرى ويعطيك تقريراً شاملاً للمهام.</p>
+                </div>
+                <button onclick="switchView('pomodoro-view')" class="btn">بدء جلسة تركيز</button>
+            </div>
+
+            <div class="card notebook">
+                <div>
+                    <div class="card-icon">📝</div>
+                    <h2>Digital Notebook</h2>
+                    <p>دفتر الملاحظات الشامل المكون من 100 صفحة لحفظ أفكارك بأمان.</p>
+                </div>
+                <button onclick="switchView('notebook-view')" class="btn">تدوين ملاحظة</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="habit-view" class="view">
+        <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
+        <h2>✅ متابع العادات اليومي</h2>
+        <br>
+        <div class="add-habit-box">
+            <input type="text" id="new-habit-input" placeholder="أضف هدفاً أو مهمة جديدة...">
+            <button onclick="addHabit()" class="btn" style="background-color: var(--accent-green); color:#000;">إضافة</button>
+        </div>
+
+        <div class="habit-grid" id="habit-container"></div>
+
+        <div class="habit-actions">
+            <button onclick="evaluateDay()" class="btn" style="background-color: var(--accent-blue); color: #000;">📊 تقييم اليوم</button>
+            <button onclick="resetHabitsDay()" class="btn" style="background-color: var(--accent-orange); color: #fff;">🔄 يوم جديد (إعادة ضبط)</button>
+        </div>
+
+        <div id="score-result" class="score-box" style="display: none;"></div>
+    </div>
+
+    <div id="azkar-view" class="view">
+        <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
+        <h2>📿 أذكار الصباح والمسبحة الإلكترونية</h2>
+        <br>
+        <div id="azkar-container" class="azkar-container"></div>
+    </div>
+
+    <div id="revision-view" class="view">
+        <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
+        <h2>🎯 OM Revision - كشاكيل المراجعة</h2>
+        <br>
+
+        <div id="notebooks-list" class="notebook-list"></div>
+
+        <div id="revision-editor" class="page-editor" style="display: none;">
+            <div class="page-navigation">
+                <button onclick="changeRevisionPage(-1)" class="btn">◀ السابق</button>
+                <span id="revision-page-num" style="font-size: 1.2rem; font-weight: bold;">صفحة 1 من 40</span>
                 
-                <div class="bg-blue-950/50 border border-amber-500/30 p-4 rounded-xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-xs font-bold bg-amber-500 text-slate-950 px-2 py-0.5 rounded">PRO</span>
-                            <span class="text-sm font-bold mr-2 text-amber-300">Dynamic QR Code</span>
-                        </div>
-                        <input type="checkbox" id="dynamic-toggle" class="w-4 h-4 accent-amber-500 cursor-pointer">
-                    </div>
-                    <p class="text-xs text-slate-400 mt-2">
-                        يتيح لك ربط الرمز بنظام OM Zone CRM لتتبع التحليلات وتغيير الوجهة لاحقاً.
-                    </p>
+                <div class="search-page-box">
+                    <input type="number" id="revision-search-input" min="1" max="40" placeholder="رقم">
+                    <button onclick="goToRevisionPage()" class="btn" style="padding: 8px 12px;">انتقال 🔍</button>
                 </div>
 
-                <button onclick="generateQRCode()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 border border-amber-300/30">
-                    توليد الرمز الآن
-                </button>
+                <button onclick="changeRevisionPage(1)" class="btn">التالي ▶</button>
             </div>
+            <textarea id="revision-text" class="editor-area" placeholder="اكتب ملاحظات وقوانين المراجعة هنا..."></textarea>
+            <br><br>
+            <button onclick="saveRevisionPage()" class="btn" style="background-color: var(--accent-green); color:#000;">💾 حفظ الصفحة</button>
+            <button onclick="closeRevisionEditor()" class="btn btn-back" style="margin-bottom:0;">إغلاق الكشكول</button>
+        </div>
+    </div>
 
-            <div class="flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-amber-500/20 pt-6 md:pt-0">
-                <div id="qrcode" class="p-4 bg-white rounded-2xl shadow-xl flex items-center justify-center min-w-[180px] min-h-[180px] border-2 border-amber-500/40">
+    <div id="pomodoro-view" class="view">
+        <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
+        
+        <div class="pomodoro-container">
+            <div class="pomodoro-box">
+                <h2>⏱️ مؤقت التركيز (OM Pomodoro)</h2>
+                <div class="timer-display" id="timer-display">00:00</div>
+
+                <div class="session-inputs" id="pomo-inputs">
+                    <input type="text" id="session-name" placeholder="اسم الجلسة (مثال: مذاكرة الفيزياء)">
+                    <input type="number" id="session-duration" placeholder="مدة الجلسة بالدقائق (مثال: 45)" min="1">
+                    <button onclick="startPomodoro()" class="btn" style="background-color: var(--accent-red); color:#fff;">بدء الجلسة</button>
                 </div>
-                <p class="text-xs text-slate-400 mt-4 text-center">قم بمسح الرمز لتجربة النظام</p>
-            </div>
-        </div>
-    </section>
 
-    <section id="services" class="max-w-7xl mx-auto px-6 py-16">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-extrabold mb-3">حلول <span class="text-amber-500">OM Zone</span> البرمجية</h2>
-            <div class="w-24 h-1 bg-gradient-to-r from-amber-500 to-orange-500 mx-auto rounded-full"></div>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-blue-950/20 border border-amber-500/20 hover:border-amber-500/50 p-8 rounded-2xl backdrop-blur-md transition group">
-                <div class="text-4xl mb-4 text-amber-500">📊</div>
-                <h3 class="text-xl font-bold mb-3 group-hover:text-amber-400 transition">نظام OM Zone CRM</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">إدارة متكاملة لعملاء شركتك، تتبع المبيعات، والتقارير المباشرة لزيادة الأرباح.</p>
-            </div>
-
-            <div class="bg-blue-950/20 border border-amber-500/20 hover:border-amber-500/50 p-8 rounded-2xl backdrop-blur-md transition group">
-                <div class="text-4xl mb-4 text-amber-500">💻</div>
-                <h3 class="text-xl font-bold mb-3 group-hover:text-amber-400 transition">تطوير المواقع والمنصات</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">تطبيقات ويب متجاوبة وسريعة جداً مع تصاميم زجاجية حديثة تعكس قوة علامتك التجارية.</p>
-            </div>
-
-            <div class="bg-blue-950/20 border border-amber-500/20 hover:border-amber-500/50 p-8 rounded-2xl backdrop-blur-md transition group">
-                <div class="text-4xl mb-4 text-amber-500">🚀</div>
-                <h3 class="text-xl font-bold mb-3 group-hover:text-amber-400 transition">حلول التجارة الإلكترونية</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">ربط المتاجر الإلكترونية بأنظمة الدفع، الشحن، وإدارة المخزون بدقة عالية.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="max-w-3xl mx-auto px-6 py-16">
-        <div class="bg-slate-900/80 border border-amber-500/30 p-8 md:p-10 rounded-3xl backdrop-blur-xl orange-glow">
-            <h2 class="text-2xl font-bold text-center mb-2">انضم إلى عملاء <span class="text-amber-500">OM Zone</span></h2>
-            <p class="text-slate-400 text-center text-sm mb-8">اطلب استشارتك المجانية وابدأ التحول الرقمي لمشروعك الآن</p>
-            
-            <form class="space-y-4" onsubmit="event.preventDefault(); alert('تم إرسال الطلب وربطه بنظام OM Zone CRM بنجاح!');">
-                <div class="grid md:grid-cols-2 gap-4">
-                    <input type="text" placeholder="الاسم الكامل" required class="bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500 text-white">
-                    <input type="email" placeholder="البريد الإلكتروني" required class="bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500 text-white">
+                <div id="pomo-controls" style="display: none;">
+                    <button onclick="stopPomodoro(true)" class="btn" style="background-color: var(--accent-orange); color:#fff;">إنهاء الجلسة الآن</button>
                 </div>
-                <select class="w-full bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 text-slate-400 focus:outline-none focus:border-amber-500">
-                    <option>اختر الخدمة المطلوبة...</option>
-                    <option>نظام OM Zone CRM / POS</option>
-                    <option>تطوير موقع أو تطبيق متكامل</option>
-                    <option>استشارة تحول رقمي</option>
-                </select>
-                <textarea rows="3" placeholder="تفاصيل إضافية عن مشروعك..." class="w-full bg-slate-950 border border-amber-500/20 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500 text-white"></textarea>
-                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-extrabold py-4 rounded-xl transition shadow-lg shadow-amber-500/20">
-                    إرسال الطلب لنظام CRM
-                </button>
-            </form>
-        </div>
-    </section>
+            </div>
 
-    <footer class="border-t border-amber-500/20 py-8 text-center text-slate-500 text-sm bg-slate-950/80">
-        <p>© 2026 جميع الحقوق محفوظة لشركة <span class="text-amber-500 font-bold">OM Zone</span> Solutions.</p>
-    </footer>
+            <div class="stats-side-summary">
+                <div class="stat-card green">
+                    <h3>الجلسات المنجزة</h3>
+                    <div class="count" id="completed-count" style="color: var(--accent-green);">0</div>
+                </div>
+                <div class="stat-card red">
+                    <h3>الجلسات غير المنجزة</h3>
+                    <div class="count" id="incomplete-count" style="color: var(--accent-red);">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sessions-table-container">
+            <div class="sessions-header">
+                <h3 style="color: var(--accent-blue);">📋 سجل الجلسات التفصيلي</h3>
+                <button onclick="resetPomoDay()" class="btn" style="background-color: var(--accent-orange); color:#fff; padding: 6px 12px; font-size: 0.9rem;">🔄 يوم جديد (مسح السجل)</button>
+            </div>
+            <table class="sessions-table">
+                <thead>
+                    <tr>
+                        <th>اسم الجلسة</th>
+                        <th>الحالة</th>
+                        <th>وقت البدء</th>
+                        <th style="text-align: center;">الحذف</th>
+                    </tr>
+                </thead>
+                <tbody id="sessions-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="notebook-view" class="view">
+        <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
+        <h2>📝 الدفتر الرقمي (100 صفحة)</h2>
+        <br>
+        <div class="page-editor">
+            <div class="page-navigation">
+                <button onclick="changeDigitalPage(-1)" class="btn">◀ الصفحة السابقة</button>
+                <span id="digital-page-num" style="font-size: 1.2rem; font-weight: bold;">صفحة 1 من 100</span>
+
+                <div class="search-page-box">
+                    <input type="number" id="digital-search-input" min="1" max="100" placeholder="رقم">
+                    <button onclick="goToDigitalPage()" class="btn" style="padding: 8px 12px;">انتقال 🔍</button>
+                </div>
+
+                <button onclick="changeDigitalPage(1)" class="btn">الصفحة التالية ▶</button>
+            </div>
+            <textarea id="digital-text" class="editor-area" placeholder="اكتب أفكارك وملاحظاتك اليومية..."></textarea>
+            <br><br>
+            <button onclick="saveDigitalPage()" class="btn" style="background-color: var(--accent-orange); color:#fff;">💾 حفظ التغييرات</button>
+        </div>
+    </div>
 
     <script>
-        let qrcodeObj = null;
-
-        function generateQRCode() {
-            const inputVal = document.getElementById('qr-input').value.trim();
-            const qrcodeContainer = document.getElementById('qrcode');
-            const isDynamic = document.getElementById('dynamic-toggle').checked;
-
-            if (!inputVal) {
-                alert('يرجى إدخال رابط أو نص أولاً!');
-                return;
+        // --- Navigation ---
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            if(viewId === 'pomodoro-view') {
+                renderPomoHistory();
             }
+        }
 
-            if (isDynamic) {
-                alert('تنبيه: ميزة Dynamic QR مرتبطة بحسابك في منظومة OM Zone CRM!');
+        // --- 1. Habit Tracker Logic ---
+        let habits = JSON.parse(localStorage.getItem('om_habits')) || [
+            { text: 'صلاه الفجر', completed: false },
+            { text: 'الصلاه علي النبي 100مره', completed: false },
+            { text: 'قراءة 10 صفحات من القرآن', completed: false },
+            { text: 'صلاه الظهر', completed: false },
+            { text: 'صلاه العصر', completed: false },
+            { text: 'صلاه المغرب', completed: false },
+            { text: 'صلاه العشاء', completed: false }
+        ];
+
+        function renderHabits() {
+            const container = document.getElementById('habit-container');
+            container.innerHTML = '';
+            habits.forEach((h, index) => {
+                const item = document.createElement('div');
+                item.className = `habit-item ${h.completed ? 'completed' : ''}`;
+                item.innerHTML = `
+                    <div class="habit-left" onclick="toggleHabit(${index})">
+                        <input type="checkbox" ${h.completed ? 'checked' : ''} onchange="toggleHabit(${index})">
+                        <span>${h.text}</span>
+                    </div>
+                    <button class="btn-delete" onclick="deleteHabit(${index})" title="حذف المهمة">🗑️</button>
+                `;
+                container.appendChild(item);
+            });
+            localStorage.setItem('om_habits', JSON.stringify(habits));
+        }
+
+        function toggleHabit(index) {
+            habits[index].completed = !habits[index].completed;
+            renderHabits();
+        }
+
+        function addHabit() {
+            const input = document.getElementById('new-habit-input');
+            if(input.value.trim() !== "") {
+                habits.push({ text: input.value.trim(), completed: false });
+                input.value = "";
+                renderHabits();
             }
+        }
 
-            qrcodeContainer.innerHTML = "";
+        function deleteHabit(index) {
+            habits.splice(index, 1);
+            renderHabits();
+        }
 
-            qrcodeObj = new QRCode(qrcodeContainer, {
-                text: inputVal,
-                width: 160,
-                height: 160,
-                colorDark : "#0f172a",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
+        function resetHabitsDay() {
+            habits.forEach(h => h.completed = false);
+            document.getElementById('score-result').style.display = 'none';
+            renderHabits();
+            alert('تم بدء يوم جديد! تم إلغاء تحديد كافة المهام 🔄');
+        }
+
+        function evaluateDay() {
+            const total = habits.length;
+            if (total === 0) return;
+            const completed = habits.filter(h => h.completed).length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            const resultBox = document.getElementById('score-result');
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `
+                📌 <strong>تقييم اليوم:</strong> لقد أنجزت <strong>${completed}</strong> من أصل <strong>${total}</strong> أهداف.<br>
+                نسبة الإنجاز: <strong>${percentage}%</strong> ${percentage >= 50 ? '🎉 ممتاز، واصل التقدم!' : '💪 بإمكانك تقديم الأفضل غداً!'}
+            `;
+        }
+        renderHabits();
+
+        // --- 2. Azkar & Tasbeeh Logic ---
+        const azkarData = [
+            {
+                text: "أصْبَحْنَا وَأصْبَحَ المُلْكُ للَّهِ، والحَمْدُ للَّهِ لا إلَهَ إلَّا اللَّهُ، وَحْدَهُ لا شَرِيكَ له، له المُلْكُ وَلَهُ الحَمْدُ وَهو علَى كُلِّ شيءٍ قَدِيرٌ...",
+                count: 1,
+                fadl: "من قالها حين يصبح أعطي خير ما في هذا اليوم وخير ما بعده."
+            },
+            {
+                text: "اللَّهُمَّ أنْتَ رَبِّي لا إلَهَ إلَّا أنْتَ، خَلَقْتَنِي وأنا عَبْدُكَ، وأنا علَى عَهْدِكَ ووَعْدِكَ ما اسْتَطَعْتُ، أعُوذُ بكَ مِن شَرِّ ما صَنَعْتُ، أبُوءُ لكَ بنِعْمَتِكَ عَلَيَّ، وأَبُوءُ لكَ بذَنْبِي فاغْفِرْ لِي، فإنَّه لا يَغْفِرُ الذُّنُوبَ إلَّا أنْتَ.",
+                count: 1,
+                fadl: "سيد الاستغفار: من قالها موقناً بها حين يصبح فمات من يومه دخل الجنة."
+            },
+            {
+                text: "قراءة سورة الإخلاص، والمعوذتين (الفلق والناس).",
+                count: 3,
+                fadl: "من قالها ثلاث مرات حين يصبح وثلاثاً حين يمسي تكفيه من كل شيء."
+            },
+            {
+                text: "بِسْمِ اللهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ العَلِيمُ.",
+                count: 3,
+                fadl: "من قالها ثلاثاً إذا أصبح وثلاثاً إذا أمسى لم يضره شيء."
+            },
+            {
+                text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلامِ دِينَاً، وَبِمُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ نَبِيَّاً.",
+                count: 3,
+                fadl: "من قالها حين يصبح وحين يمسي كان حقاً على الله أن يرضيه يوم القيامة."
+            },
+            {
+                text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.",
+                count: 3,
+                fadl: "تعدل أضعافاً مضاعفة من الذكر والأجر."
+            },
+            {
+                text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ.",
+                count: 100,
+                fadl: "حُطَّت خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ البَحْرِ، وَلَمْ يَأْتِ أَحَدٌ يَوْمَ القِيَامَةِ بِأَفْضَلَ مِمَّا جَاءَ بِهِ إِلَّا أَحَدٌ قَالَ مِثْلَ مَا قَالَ أَوْ زَادَ."
+            },
+            {
+                text: "أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ.",
+                count: 100,
+                fadl: "محو للذنوب وسبب لمغفرة الله وتيسير الأرزاق."
+            }
+        ];
+
+        function renderAzkar() {
+            const container = document.getElementById('azkar-container');
+            container.innerHTML = '';
+            azkarData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'azkar-card';
+                card.innerHTML = `
+                    <div class="zekr-text">${item.text}</div>
+                    <div class="fadl"><b>فضل الذكر:</b> ${item.fadl}</div>
+                    <div class="azkar-btn-group">
+                        <button class="counter-btn" id="azkar-btn-${index}" onclick="decrementAzkar(${index}, ${item.count})">
+                            المتبقي: <span id="azkar-count-${index}">${item.count}</span>
+                        </button>
+                        <button class="reset-btn" onclick="resetAzkarCount(${index}, ${item.count})">إعادة</button>
+                    </div>
+                `;
+                container.appendChild(card);
             });
         }
 
-        window.onload = function() {
-            document.getElementById('qr-input').value = "https://omzone.solutions";
-            generateQRCode();
-        };
+        function decrementAzkar(index, initialCount) {
+            const countElement = document.getElementById(`azkar-count-${index}`);
+            const button = document.getElementById(`azkar-btn-${index}`);
+            let currentCount = parseInt(countElement.innerText);
+
+            if (currentCount > 1) {
+                currentCount--;
+                countElement.innerText = currentCount;
+            } else if (currentCount === 1) {
+                countElement.innerText = 0;
+                button.innerText = "تم بحمد الله ✓";
+                button.disabled = true;
+            }
+        }
+
+        function resetAzkarCount(index, initialCount) {
+            const button = document.getElementById(`azkar-btn-${index}`);
+            button.disabled = false;
+            button.innerHTML = `المتبقي: <span id="azkar-count-${index}">${initialCount}</span>`;
+        }
+        renderAzkar();
+
+        // --- 3. Revision Logic (4 Notebooks x 40 Pages) ---
+        let currentNotebook = null;
+        let currentRevPage = 1;
+
+        function renderNotebooks() {
+            const container = document.getElementById('notebooks-list');
+            container.innerHTML = '';
+            for(let i = 1; i <= 4; i++) {
+                const card = document.createElement('div');
+                card.className = 'notebook-card';
+                card.innerHTML = `
+                    <div>
+                        <h3>📔 كشكول ${i}</h3>
+                        <small style="color:var(--text-secondary)">40 صفحة</small>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="action-icon-btn btn-download-icon" onclick="downloadNotebook(${i})" title="تحميل الكشكول">
+                            📥 تنزيل
+                        </button>
+                        <button class="action-icon-btn btn-open-icon" onclick="openNotebook(${i})" title="فتح الكشكول للكتابة">
+                            📖 فتح
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        function downloadNotebook(notebookNum) {
+            let fullContent = `=========================================\n`;
+            fullContent += `   محتوى كشكول المراجعة رقم (${notebookNum}) - OM ZONE   \n`;
+            fullContent += `=========================================\n\n`;
+
+            let hasContent = false;
+
+            for (let page = 1; page <= 40; page++) {
+                const key = `om_rev_${notebookNum}_${page}`;
+                const pageText = localStorage.getItem(key);
+
+                if (pageText && pageText.trim() !== "") {
+                    hasContent = true;
+                    fullContent += `--- [ صفحة ${page} ] ---\n`;
+                    fullContent += `${pageText}\n\n`;
+                }
+            }
+
+            if (!hasContent) {
+                alert(`كشكول ${notebookNum} فارغ حالياً! قم بكتابة وتجميع ملاحظات أولاً لتتمكن من التنزيل.`);
+                return;
+            }
+
+            const bom = '\uFEFF';
+            const blob = new Blob([bom + fullContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `كشكول_مراجعة_${notebookNum}.txt`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function openNotebook(num) {
+            currentNotebook = num;
+            currentRevPage = 1;
+            document.getElementById('notebooks-list').style.display = 'none';
+            document.getElementById('revision-editor').style.display = 'block';
+            loadRevisionPage();
+        }
+
+        function closeRevisionEditor() {
+            document.getElementById('notebooks-list').style.display = 'grid';
+            document.getElementById('revision-editor').style.display = 'none';
+        }
+
+        function changeRevisionPage(delta) {
+            saveRevisionPage(false);
+            currentRevPage += delta;
+            if(currentRevPage < 1) currentRevPage = 1;
+            if(currentRevPage > 40) currentRevPage = 40;
+            loadRevisionPage();
+        }
+
+        function goToRevisionPage() {
+            const pageInput = document.getElementById('revision-search-input');
+            const pageNum = parseInt(pageInput.value);
+            if(pageNum >= 1 && pageNum <= 40) {
+                saveRevisionPage(false);
+                currentRevPage = pageNum;
+                loadRevisionPage();
+                pageInput.value = '';
+            } else {
+                alert('يرجى إدخال رقم صفحة صحيح بين 1 و 40');
+            }
+        }
+
+        function loadRevisionPage() {
+            document.getElementById('revision-page-num').innerText = `كشكول ${currentNotebook} - صفحة ${currentRevPage} من 40`;
+            const key = `om_rev_${currentNotebook}_${currentRevPage}`;
+            document.getElementById('revision-text').value = localStorage.getItem(key) || "";
+        }
+
+        function saveRevisionPage(showAlert = true) {
+            if(!currentNotebook) return;
+            const key = `om_rev_${currentNotebook}_${currentRevPage}`;
+            const text = document.getElementById('revision-text').value;
+            localStorage.setItem(key, text);
+            if(showAlert) alert('تم حفظ الصفحة بنجاح! 💾');
+        }
+        renderNotebooks();
+
+        // --- 4. Pomodoro Logic ---
+        let pomoInterval = null;
+
+        function startPomodoro() {
+            const name = document.getElementById('session-name').value.trim() || "جلسة تركيز";
+            const mins = parseInt(document.getElementById('session-duration').value);
+
+            if(!mins || mins <= 0) {
+                alert("يرجى إدخال مدة صحيحة بالجلسة!");
+                return;
+            }
+
+            const startTimeStr = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            const endTime = Date.now() + mins * 60 * 1000;
+            const sessionData = { name, endTime, duration: mins, startTime: startTimeStr };
+            localStorage.setItem('om_active_pomo', JSON.stringify(sessionData));
+
+            initPomoUI();
+        }
+
+        function initPomoUI() {
+            const activeSession = JSON.parse(localStorage.getItem('om_active_pomo'));
+            if(!activeSession) return;
+
+            document.getElementById('pomo-inputs').style.display = 'none';
+            document.getElementById('pomo-controls').style.display = 'block';
+
+            if(pomoInterval) clearInterval(pomoInterval);
+
+            pomoInterval = setInterval(() => {
+                const remaining = Math.round((activeSession.endTime - Date.now()) / 1000);
+                if(remaining <= 0) {
+                    clearInterval(pomoInterval);
+                    alert(`🎉 تهانينا! انتهت جلسة: ${activeSession.name}`);
+                    savePomoHistory(activeSession.name, true, activeSession.startTime);
+                    resetPomoUI();
+                } else {
+                    const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+                    const s = (remaining % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                }
+            }, 1000);
+        }
+
+        function stopPomodoro(manual = true) {
+            const activeSession = JSON.parse(localStorage.getItem('om_active_pomo'));
+            if(activeSession) {
+                savePomoHistory(activeSession.name, false, activeSession.startTime);
+            }
+            clearInterval(pomoInterval);
+            resetPomoUI();
+        }
+
+        function resetPomoUI() {
+            localStorage.removeItem('om_active_pomo');
+            document.getElementById('timer-display').innerText = "00:00";
+            document.getElementById('pomo-inputs').style.display = 'flex';
+            document.getElementById('pomo-controls').style.display = 'none';
+            renderPomoHistory();
+        }
+
+        function savePomoHistory(name, completed, startTime) {
+            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
+            history.unshift({
+                name: name,
+                completed: completed,
+                time: startTime || new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+            });
+            localStorage.setItem('om_pomo_history_v2', JSON.stringify(history));
+        }
+
+        function renderPomoHistory() {
+            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
+            const tbody = document.getElementById('sessions-table-body');
+            tbody.innerHTML = '';
+
+            let completedCount = 0;
+            let incompleteCount = 0;
+
+            history.forEach((session, index) => {
+                if (session.completed) completedCount++;
+                else incompleteCount++;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${session.name}</td>
+                    <td class="${session.completed ? 'status-completed' : 'status-failed'}">
+                        ${session.completed ? 'مكتملة ✓' : 'غير مكتملة ✗'}
+                    </td>
+                    <td>${session.time}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-delete" onclick="deletePomoSession(${index})" title="حذف الجلسة">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('completed-count').innerText = completedCount;
+            document.getElementById('incomplete-count').innerText = incompleteCount;
+        }
+
+        function deletePomoSession(index) {
+            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('om_pomo_history_v2', JSON.stringify(history));
+            renderPomoHistory();
+        }
+
+        function resetPomoDay() {
+            if(confirm("هل أنت تأكد من إعادة الضبط ومسح سجل الجلسات بالكامل؟")) {
+                localStorage.removeItem('om_pomo_history_v2');
+                renderPomoHistory();
+            }
+        }
+
+        // Auto restore active timer if running
+        if(localStorage.getItem('om_active_pomo')) {
+            initPomoUI();
+        }
+
+        // --- 5. Digital Notebook Logic (100 Pages) ---
+        let currentDigitalPage = 1;
+
+        function changeDigitalPage(delta) {
+            saveDigitalPage(false);
+            currentDigitalPage += delta;
+            if(currentDigitalPage < 1) currentDigitalPage = 1;
+            if(currentDigitalPage > 100) currentDigitalPage = 100;
+            loadDigitalPage();
+        }
+
+        function goToDigitalPage() {
+            const input = document.getElementById('digital-search-input');
+            const pageNum = parseInt(input.value);
+            if(pageNum >= 1 && pageNum <= 100) {
+                saveDigitalPage(false);
+                currentDigitalPage = pageNum;
+                loadDigitalPage();
+                input.value = '';
+            } else {
+                alert('يرجى إدخال رقم صفحة بين 1 و 100');
+            }
+        }
+
+        function loadDigitalPage() {
+            document.getElementById('digital-page-num').innerText = `صفحة ${currentDigitalPage} من 100`;
+            const key = `om_digital_note_${currentDigitalPage}`;
+            document.getElementById('digital-text').value = localStorage.getItem(key) || "";
+        }
+
+        function saveDigitalPage(showAlert = true) {
+            const key = `om_digital_note_${currentDigitalPage}`;
+            const text = document.getElementById('digital-text').value;
+            localStorage.setItem(key, text);
+            if(showAlert) alert('تم حفظ ملاحظتك بنجاح! 💾');
+        }
+        loadDigitalPage();
     </script>
 </body>
 </html>
