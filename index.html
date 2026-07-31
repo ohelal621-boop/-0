@@ -25,6 +25,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Tajawal', sans-serif;
+            user-select: none; /* لمنع تحديد النصوص أثناء الضغط المطول */
         }
 
         body {
@@ -127,7 +128,11 @@
             font-weight: 700;
             cursor: pointer;
             border: none;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn:hover {
@@ -248,6 +253,29 @@
         }
 
         /* Azkar & Tasbeeh Styles */
+        .azkar-tabs {
+            display: flex;
+            gap: 10px;
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+        }
+
+        .azkar-tab-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .azkar-tab-btn.active {
+            background-color: var(--accent-teal);
+            color: #000;
+        }
+
         .azkar-container {
             display: flex;
             flex-direction: column;
@@ -271,6 +299,7 @@
             color: var(--accent-teal);
             margin-bottom: 12px;
             line-height: 1.6;
+            user-select: text;
         }
 
         .fadl {
@@ -280,6 +309,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             margin-bottom: 15px;
+            user-select: text;
         }
 
         .azkar-btn-group {
@@ -319,10 +349,25 @@
         }
 
         /* Revision & Notebook Styles */
+        .revision-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .notebook-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(2, 1fr); /* تجعل كل كشكولين في سطر واحد دائماً */
             gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .notebook-list {
+                gap: 10px;
+            }
         }
 
         .notebook-card {
@@ -335,6 +380,37 @@
             align-items: center;
             gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .notebook-card:hover {
+            border-color: var(--accent-yellow);
+        }
+
+        .notebook-card h3 {
+            font-size: 1.2rem;
+            color: var(--accent-yellow);
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .notebook-actions {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .notebook-actions .btn {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-download {
+            background-color: var(--accent-blue) !important;
+            color: #000 !important;
         }
 
         .page-editor {
@@ -380,6 +456,7 @@
             font-size: 1.25rem;
             line-height: 1.8;
             resize: vertical;
+            user-select: text;
         }
 
         /* Pomodoro Layout Styles */
@@ -505,6 +582,37 @@
             font-size: 2.2rem;
             font-weight: 800;
         }
+
+        /* Modal Context Menu for Long Press */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--accent-yellow);
+        }
+
+        .modal-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -533,7 +641,7 @@
                 <div>
                     <div class="card-icon">📿</div>
                     <h2>الأذكار والتسبيح</h2>
-                    <p>أذكار الصباح والمسبحة الإلكترونية التفاعلية لحفظ أذكارك اليومية بسهولة.</p>
+                    <p>أذكار الصباح، المساء، والأدعية الشاملة مع المسبحة الإلكترونية لحفظ أذكارك بسهولة.</p>
                 </div>
                 <button onclick="switchView('azkar-view')" class="btn">فتح الأذكار</button>
             </div>
@@ -542,7 +650,7 @@
                 <div>
                     <div class="card-icon">🎯</div>
                     <h2>OM Revision</h2>
-                    <p>مراجعك السريعة! 4 كشاكيل تتيح لك 40 صفحة لكل منها لتسجيل كل ما تحتاج.</p>
+                    <p>مراجعك السريعة! كشاكيل تتيح لك 40 صفحة لكل منها لتسجيل وحفظ كل مذكراتك.</p>
                 </div>
                 <button onclick="switchView('revision-view')" class="btn">بدء المراجعة</button>
             </div>
@@ -588,13 +696,23 @@
 
     <div id="azkar-view" class="view">
         <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
-        <h2>📿 أذكار الصباح والمسبحة الإلكترونية</h2>
+        <h2>📿 الأذكار الأدعية والمسبحة الإلكترونية</h2>
         <br>
+        
+        <div class="azkar-tabs">
+            <button class="azkar-tab-btn active" onclick="switchAzkarCategory('sabah', this)">أذكار الصباح</button>
+            <button class="azkar-tab-btn" onclick="switchAzkarCategory('maseya', this)">أذكار المساء (الليل)</button>
+            <button class="azkar-tab-btn" onclick="switchAzkarCategory('ad3ya', this)">أدعية مأثورة</button>
+        </div>
+
         <div id="azkar-container" class="azkar-container"></div>
     </div>
 
     <div id="revision-view" class="view">
-        <button onclick="switchView('main-view')" class="btn btn-back">⬅ العودة للرئيسية</button>
+        <div class="revision-header-bar">
+            <button onclick="switchView('main-view')" class="btn btn-back" style="margin-bottom:0;">⬅ العودة للرئيسية</button>
+            <button onclick="addNewNotebook()" class="btn" style="background-color: var(--accent-green); color:#000;">➕ إضافة كشكول جديد</button>
+        </div>
         <h2>🎯 OM Revision - كشاكيل المراجعة</h2>
         <br>
 
@@ -616,6 +734,17 @@
             <br><br>
             <button onclick="saveRevisionPage()" class="btn" style="background-color: var(--accent-green); color:#000;">💾 حفظ الصفحة</button>
             <button onclick="closeRevisionEditor()" class="btn btn-back" style="margin-bottom:0;">إغلاق الكشكول</button>
+        </div>
+    </div>
+
+    <div id="notebook-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-notebook-title">خيارات الكشكول</h3>
+            <div class="modal-btn-group">
+                <button onclick="renameNotebookAction()" class="btn" style="background-color: var(--accent-yellow); color:#000;">✏️ تعديل الاسم</button>
+                <button onclick="deleteNotebookAction()" class="btn" style="background-color: var(--accent-red); color:#fff;">🗑️ حذف الكشكول</button>
+                <button onclick="closeNotebookModal()" class="btn btn-back" style="margin-bottom:0; margin-top: 10px;">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -706,6 +835,9 @@
             if(viewId === 'revision-view') {
                 renderNotebooks();
             }
+            if(viewId === 'azkar-view') {
+                renderAzkar();
+            }
         }
 
         // --- 1. Habit Tracker Logic ---
@@ -779,210 +911,202 @@
         renderHabits();
 
         // --- 2. Azkar & Tasbeeh Logic ---
-        const azkarData = [
-  {
-    text: "أصْبَحْنَا وَأصْبَحَ المُلْكُ للَّهِ، والَحَمْدُ للَّهِ لا إلَهَ إلَّا اللَّهُ، وَحْدَهُ لا شَرِيكَ له، له المُلْكُ وَلَهُ الحَمْدُ وَهو علَى كُلِّ شيءٍ قَدِيرٌ، رَبِّ أسْأَلُكَ خَيْرَ ما في هذا اليَوْمِ وَخَيْرَ ما بَعْدَهُ، وأَعُوذُ بكَ مِن شَرِّ ما في هذا اليَوْمِ وَشَرِّ ما بَعْدَهُ، رَبِّ أعُوذُ بكَ مِنَ الكَسَلِ وَسُوءِ الكِبَرِ، رَبِّ أعُوذُ بكَ مِن عَذَابٍ في النَّارِ وَعَذَابٍ في القَبْرِ.", 
-    count: 1,
-    fadl: "من قالها حين يصبح أعطي خير ما في هذا اليوم وخير ما بعده، ووقي شر ما في هذا اليوم وشر ما بعده."
-  },
-  {
-    text: "اللَّهُمَّ أنْتَ رَبِّي لا إلَهَ إلَّا أنْتَ، خَلَقْتَنِي وأنا عَبْدُكَ، وأنا علَى عَهْدِكَ ووَعْدِكَ ما اسْتَطَعْتُ، أعُوذُ بكَ مِن شَرِّ ما صَنَعْتُ، أبُوءُ لكَ بنِعْمَتِكَ عَلَيَّ، وأَبُوءُ لكَ بذَنْبِي فاغْفِرْ لِي، فإنَّه لا يَغْفِرُ الذُّنُوبَ إلَّا أنْتَ.",
-    count: 1,
-    fadl: "سيد الاستغفار: من قالها موقناً بها حين يصبح فمات من يومه دخل الجنة وكذلك حين يمسي."
-  },
-  {
-    text: "قراءة سورة الإخلاص",
-    count: 3,
-    fadl: "من قالها ثلاث مرات حين يصبح وثلاثاً حين يمسي تكفيه من كل شيء هي والمعوذتين."
-  },
-  {
-    text: "قراءة سورة الفلق",
-    count: 3,
-    fadl: "من قالها ثلاث مرات حين يصبح وثلاثاً حين يمسي تكفيه من كل شيء هي والمعوذتين."
-  },
-  {
-    text: "قراءة سورة الناس",
-    count: 3,
-    fadl: "من قالها ثلاث مرات حين يصبح وثلاثاً حين يمسي تكفيه من كل شيء هي والمعوذتين."
-  },
-  {
-    text: "بِسْمِ اللهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ العَلِيمُ.",
-    count: 3,
-    fadl: "من قالها ثلاثاً إذا أصبح وثلاثاً إذا أمسى لم يضره شيء."
-  },
-  {
-    text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلامِ دِينَاً، وَبِمُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ نَبِيَّاً.",
-    count: 3,
-    fadl: "من قالها حين يصبح وحين يمسي كان حقاً على الله أن يرضيه يوم القيامة."
-  },
-  {
-    text: "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ.",
-    count: 4,
-    fadl: " من قالها أعتقه الله من النار"
-  },
-  {
-    text: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
-    count: 1,
-    fadl: "من قالها حين يصبح أُجِيرَ من الجن حتى يمسي ومن قالها حين يمسي أُجِيرَ من الجن حتى يصبح."
-  },
- {
- text:"حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
-count:7,
-fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا والأخره",
- },
-            {
-            text:"اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ.",
-            count:1,   
-            },
-            {
-            text:"أَصْبَحْنَا عَلَى فِطْرَةِ الْإِسْلَامِ، وَعَلَى كَلِمَةِ الْإِخْلَاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ حَنِيفًا مُسْلِمًا وَمَا كَانَ مِنَ الْمُشْرِكِينَ.",
-                count:1,
-            },
-            {
-            text:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.",
-            count:3,
-            },
-            {
-             text:"اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَهَ إِلَّا أَنْتَ",
-            count:3,
-            },
-            {
-            text:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لَا إِلَهَ إِلَّا أَنْتَ.",
-            count:3,
-            },
-            {
-             text:"اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي",
-             count:1,
-                
-            },
-            {
-              text:"يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.",
-              count:3,  
-            },
-            {
-            text:"أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذَا الْيَوْمِ: فَتْحَهُ، وَنَصْرَهُ، وَنُورَهُ، وَبَرَكَتَهُ، وَهُدَاهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهِ وَشَرِّ مَا بَعْدَهُ.",
-            count:3,
-            },
-            {
-            text:"اللَّهُمَّ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ، فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطَانِ وَشِرْكِهِ، وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءًا أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ.",
-            count:1,
-            },
-            {
-            text:"أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.",
-            count:3,
-            },
-            {
-            text:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّدٍ.",
-            count:10,
-            fadl:"من صل عليا حين يصبح وحين يمسي ادركته شفاعتي يوم القيامه"
-            },
-            {
-            text:"اللَّهُمَّ إِنَّا نَعُوذُ بِكَ مِنْ أَنْ نُشْرِكَ بِكَ شَيْئًا نَعْلَمُهُ، وَنَسْتَغْفِرُكَ لِمَا لَا نَعْلَمُهُ",
-            count:3,
-            },
-            {
-            text:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ.",
-            count:3,
-            },
-            {
-            text:"أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ.",
-            count:3,
-            },
-            {
-            text:"يَا رَبِّ لَكَ الْحَمْدُ كَمَا يَنْبَغِي لِجَلَالِ وَجْهِكَ وَلِعَظِيمِ سُلْطَانِكَ.",
-            count:3,
-            },
-            {
-            text:"اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلً.",
-            count:1,
-            },
-            {
-            text:"اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، عَلَيْكَ تَوَكَّلْتُ وَأَنْتَ رَبُّ الْعَرْشِ الْعَظِيمِ، مَا شَاءَ اللَّهُ كَانَ وَمَا لَمْ يَشَأْ لَمْ يَكُنْ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ، أَعْلَمُ أَنَّ اللَّهَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، وَأَنَّ اللَّهَ قَدْ أَحَاطَ بِكُلِّ شَيْءٍ عِلْمًا، اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ كُلِّ دَابَّةٍ أَنْتَ آخِذٌ بِنَاصِيَتِهَا، إِنَّ رَبِّي عَلَى صِرَاطٍ مُسْتَقِيمٍ.",
-            count:1,
-            },
-            {
-            text:"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-            count:100,
-            fadl:"كانت له عدل عشر رقاب وكتبت له مئه حسنه ومحيت عنه مئه سيئه وكانت له حرز من الشيطان"
-            },
-            {
-            text:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-            count:100,
-            fadl:" في الحديث الشريف أن من قالها مائة مرة في اليوم حُطَّت خطايا وإن كانت مثل زبد البحر."
-            },
-            {
-            text:"أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
-            count:100,
-            fadl:"مئه حسنه,ومحيت عنه مئه سيئه وكانت له حرز من الشيطان"
-            }
+        let currentAzkarCategory = 'sabah';
 
-            
-        ];
+        const azkarDatabase = {
+            sabah: [
+                { text: "أصْبَحْنَا وَأصْبَحَ المُلْكُ للَّهِ، والَحَمْدُ للَّهِ لا إلَهَ إلَّا اللَّهُ، وَحْدَهُ لا شَرِيكَ له، له المُلْكُ وَلَهُ الحَمْدُ وَهو علَى كُلِّ شيءٍ قَدِيرٌ، رَبِّ أسْأَلُكَ خَيْرَ ما في هذا اليَوْمِ وَخَيْرَ ما بَعْدَهُ، وأَعُوذُ بكَ مِن شَرِّ ما في هذا اليَوْمِ وَشَرِّ ما بَعْدَهُ.", count: 1, fadl: "من قالها حين يصبح أعطي خير ما في هذا اليوم وخير ما بعده." },
+                { text: "اللَّهُمَّ أنْتَ رَبِّي لا إلَهَ إلَّا أنْتَ، خَلَقْتَنِي وأنا عَبْدُكَ، وأنا علَى عَهْدِكَ ووَعْدِكَ ما اسْتَطَعْتُ، أعُوذُ بكَ مِن شَرِّ ما صَنَعْتُ، أبُوءُ لكَ بنِعْمَتِكَ عَلَيَّ، وأَبُوءُ لكَ بذَنْبِي فاغْفِرْ لِي، فإنَّه لا يَغْفِرُ الذُّنُوبَ إلَّا أنْتَ.", count: 1, fadl: "سيد الاستغفار: من قالها موقناً بها حين يصبح فمات من يومه دخل الجنة." },
+                { text: "قراءة سورة الإخلاص، الفلق، والناس", count: 3, fadl: "تكفيك من كل شيء." },
+                { text: "بِسْمِ اللهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ العَلِيمُ.", count: 3, fadl: "لم يضره شيء." },
+                { text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلامِ دِينَاً، وَبِمُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ نَبِيَّاً.", count: 3, fadl: "كان حقاً على الله أن يرضيه يوم القيامة." },
+                { text: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", count: 7, fadl: "كفاه الله ما أهمه من أمور الدنيا والأخرة." },
+                { text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.", count: 3, fadl: "تعدل ساعات طويلة من الذكر." },
+                { text: "اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّدٍ.", count: 10, fadl: "أدركته شفاعتي يوم القيامة." }
+            ],
+            maseya: [
+                { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: 1, fadl: "من أذكار الليل والمساء لحفظ العبد وإعطائه خير الليلة." },
+                { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ.", count: 1, fadl: "من أذكار المساء المأثورة." },
+                { text: "اللَّهُمَّ أنْتَ رَبِّي لا إلَهَ إلَّا أنْتَ، خَلَقْتَنِي وأنا عَبْدُكَ، وأنا علَى عَهْدِكَ ووَعْدِكَ ما اسْتَطَعْتُ، أعُوذُ بكَ مِن شَرِّ ما صَنَعْتُ، أبُوءُ لكَ بنِعْمَتِكَ عَلَيَّ، وأَبُوءُ لكَ بذَنْبِي فاغْفِرْ لِي، فإنَّه لا يَغْفِرُ الذُّنُوبَ إلَّا أنْتَ.", count: 1, fadl: "من قالها حين يمسي ومات دخل الجنة." },
+                { text: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: 3, fadl: "لم تضره حمة أو شيء في تلك الليلة." },
+                { text: "قراءة سورة الإخلاص، الفلق، والناس", count: 3, fadl: "تكفيك من كل شيء في ليلتك." },
+                { text: "آية الكرسي: (اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...)", count: 1, fadl: "من قالها حين يمسي أُجِيرَ من الجن حتى يصبح." },
+                { text: "آمنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ... (خواتيم سورة البقرة)", count: 1, fadl: "من قرأهما في ليلة كفتاه." }
+            ],
+            ad3ya: [
+                { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي.", count: 1, fadl: "دعاء العافية الشامل." },
+                { text: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.", count: 3, fadl: "دعاء إصلاح الشأن والتوكل." },
+                { text: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ.", count: 1, fadl: "تفريب الهموم والغموم." },
+                { text: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي.", count: 3, fadl: "دعاء بالتيسير والنجاح في الدراسية والعمل." },
+                { text: "اللَّهُمَّ لا سَهْلَ إِلاَّ مَا جَعَلْتَهُ سَهْلاً، وَأَنْتَ تَجْعَلُ الحَزْنَ إِذَا شِئْتَ سَهْلاً.", count: 1, fadl: "دعاء لتسهيل الصعاب في الامتحانات والمذاكرة." }
+            ]
+        };
+
+        let azkarProgress = JSON.parse(localStorage.getItem('om_azkar_progress')) || {};
+
+        function switchAzkarCategory(cat, btn) {
+            currentAzkarCategory = cat;
+            document.querySelectorAll('.azkar-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderAzkar();
+        }
 
         function renderAzkar() {
             const container = document.getElementById('azkar-container');
             container.innerHTML = '';
-            azkarData.forEach((item, index) => {
+            const list = azkarDatabase[currentAzkarCategory];
+
+            list.forEach((item, index) => {
+                const key = `${currentAzkarCategory}_${index}`;
+                const savedCount = azkarProgress[key] !== undefined ? azkarProgress[key] : item.count;
+                
                 const card = document.createElement('div');
                 card.className = 'azkar-card';
                 card.innerHTML = `
                     <div class="zekr-text">${item.text}</div>
-                    ${item.fadl ? `<div class="fadl"><b>فضل الذكر:</b> ${item.fadl}</div>` : ''}
+                    ${item.fadl ? `<div class="fadl">💡 ${item.fadl}</div>` : ''}
                     <div class="azkar-btn-group">
-                        <button class="counter-btn" id="azkar-btn-${index}" onclick="decrementAzkar(${index}, ${item.count})">
-                            المتبقي: <span id="azkar-count-${index}">${item.count}</span>
+                        <button class="counter-btn" ${savedCount === 0 ? 'disabled' : ''} onclick="countZekr('${key}', ${item.count})">
+                            ${savedCount > 0 ? `التكرار المتبقي: ${savedCount}` : 'تم الإنجاز ✓'}
                         </button>
-                        <button class="reset-btn" onclick="resetAzkarCount(${index}, ${item.count})">إعادة ضبط</button>
+                        <button class="reset-btn" onclick="resetZekr('${key}', ${item.count})">🔄</button>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function decrementAzkar(index, initialCount) {
-            const countElement = document.getElementById(`azkar-count-${index}`);
-            const button = document.getElementById(`azkar-btn-${index}`);
-            let currentCount = parseInt(countElement.innerText);
-
-            if (currentCount > 1) {
-                currentCount--;
-                countElement.innerText = currentCount;
-            } else if (currentCount === 1) {
-                countElement.innerText = 0;
-                button.innerText = "تم بحمد الله ✓";
-                button.disabled = true;
+        function countZekr(key, max) {
+            let current = azkarProgress[key] !== undefined ? azkarProgress[key] : max;
+            if(current > 0) {
+                azkarProgress[key] = current - 1;
+                localStorage.setItem('om_azkar_progress', JSON.stringify(azkarProgress));
+                renderAzkar();
             }
         }
 
-        function resetAzkarCount(index, initialCount) {
-            const button = document.getElementById(`azkar-btn-${index}`);
-            button.disabled = false;
-            button.innerHTML = `المتبقي: <span id="azkar-count-${index}">${initialCount}</span>`;
+        function resetZekr(key, max) {
+            azkarProgress[key] = max;
+            localStorage.setItem('om_azkar_progress', JSON.stringify(azkarProgress));
+            renderAzkar();
         }
-        renderAzkar();
 
-        // --- 3. Revision Logic (4 Notebooks x 40 Pages) ---
-        let currentNotebook = null;
-        let currentRevPage = 1;
+        // --- 3. OM Revision Logic ---
+        let notebooks = JSON.parse(localStorage.getItem('om_notebooks')) || [
+            { id: 1, name: "كشكول 1", pages: {} },
+            { id: 2, name: "كشكول 2", pages: {} },
+            { id: 3, name: "كشكول 3", pages: {} },
+            { id: 4, name: "كشكول 4", pages: {} }
+        ];
+
+        let currentNotebookId = null;
+        let currentRevisionPage = 1;
+        let longPressTimer = null;
+        let selectedNotebookId = null;
+
+        function saveNotebooksState() {
+            localStorage.setItem('om_notebooks', JSON.stringify(notebooks));
+        }
 
         function renderNotebooks() {
-            const container = document.getElementById('notebooks-list');
-            container.innerHTML = '';
-            for(let i = 1; i <= 4; i++) {
+            const listContainer = document.getElementById('notebooks-list');
+            listContainer.innerHTML = '';
+
+            notebooks.forEach(nb => {
                 const card = document.createElement('div');
                 card.className = 'notebook-card';
                 card.innerHTML = `
-                    <h3>📘 كشكول المراجعة ${i}</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">40 صفحة للملاحظات والقوانين</p>
-                    <button class="btn" style="background-color: var(--accent-yellow); color:#000;" onclick="openNotebook(${i})">فتح الكشكول</button>
+                    <h3>📖 ${nb.name}</h3>
+                    <div class="notebook-actions">
+                        <button onclick="openRevisionNotebook(${nb.id})" class="btn">فتح الكشكول</button>
+                        <button onclick="downloadNotebook(${nb.id})" class="btn btn-download" title="تحميل محتوى الكشكول">📥</button>
+                    </div>
                 `;
-                container.appendChild(card);
+
+                // Add Long Press Support for mobile/desktop
+                card.addEventListener('mousedown', () => startLongPress(nb.id));
+                card.addEventListener('mouseup', cancelLongPress);
+                card.addEventListener('mouseleave', cancelLongPress);
+                
+                card.addEventListener('touchstart', (e) => {
+                    startLongPress(nb.id);
+                });
+                card.addEventListener('touchend', cancelLongPress);
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        function startLongPress(id) {
+            cancelLongPress();
+            longPressTimer = setTimeout(() => {
+                showNotebookModal(id);
+            }, 700); // 700ms للضغط المطول
+        }
+
+        function cancelLongPress() {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
             }
         }
 
-        function openNotebook(num) {
-            currentNotebook = num;
-            currentRevPage = 1;
+        function showNotebookModal(id) {
+            selectedNotebookId = id;
+            const nb = notebooks.find(n => n.id === id);
+            if(nb) {
+                document.getElementById('modal-notebook-title').innerText = `خيارات "${nb.name}"`;
+                document.getElementById('notebook-modal').style.display = 'flex';
+            }
+        }
+
+        function closeNotebookModal() {
+            document.getElementById('notebook-modal').style.display = 'none';
+            selectedNotebookId = null;
+        }
+
+        function renameNotebookAction() {
+            const nb = notebooks.find(n => n.id === selectedNotebookId);
+            if (nb) {
+                const newName = prompt("أدخل الاسم الجديد للكشكول:", nb.name);
+                if (newName && newName.trim() !== "") {
+                    nb.name = newName.trim();
+                    saveNotebooksState();
+                    renderNotebooks();
+                }
+            }
+            closeNotebookModal();
+        }
+
+        function deleteNotebookAction() {
+            const nbIndex = notebooks.findIndex(n => n.id === selectedNotebookId);
+            if (nbIndex !== -1) {
+                if (confirm(`هل أنت تأكد من حذف "${notebooks[nbIndex].name}" بما يحتويه؟`)) {
+                    notebooks.splice(nbIndex, 1);
+                    saveNotebooksState();
+                    renderNotebooks();
+                }
+            }
+            closeNotebookModal();
+        }
+
+        function addNewNotebook() {
+            const name = prompt("أدخل اسم الكشكول الجديد:");
+            if(name && name.trim() !== "") {
+                const newId = Date.now();
+                notebooks.push({
+                    id: newId,
+                    name: name.trim(),
+                    pages: {}
+                });
+                saveNotebooksState();
+                renderNotebooks();
+            }
+        }
+
+        function openRevisionNotebook(id) {
+            currentNotebookId = id;
+            currentRevisionPage = 1;
             document.getElementById('notebooks-list').style.display = 'none';
             document.getElementById('revision-editor').style.display = 'block';
             loadRevisionPage();
@@ -991,192 +1115,233 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         function closeRevisionEditor() {
             document.getElementById('revision-editor').style.display = 'none';
             document.getElementById('notebooks-list').style.display = 'grid';
+            currentNotebookId = null;
         }
 
         function loadRevisionPage() {
-            document.getElementById('revision-page-num').innerText = `صفحة ${currentRevPage} من 40 (كشكول ${currentNotebook})`;
-            const savedText = localStorage.getItem(`om_rev_${currentNotebook}_p_${currentRevPage}`) || '';
-            document.getElementById('revision-text').value = savedText;
+            const nb = notebooks.find(n => n.id === currentNotebookId);
+            if (!nb) return;
+            document.getElementById('revision-page-num').innerText = `صفحة ${currentRevisionPage} من 40 (كشكول: ${nb.name})`;
+            const text = nb.pages[currentRevisionPage] || "";
+            document.getElementById('revision-text').value = text;
         }
 
         function saveRevisionPage() {
+            const nb = notebooks.find(n => n.id === currentNotebookId);
+            if (!nb) return;
             const text = document.getElementById('revision-text').value;
-            localStorage.setItem(`om_rev_${currentNotebook}_p_${currentRevPage}`, text);
-            alert('تم حفظ الصفحة بنجاح! 💾');
+            nb.pages[currentRevisionPage] = text;
+            saveNotebooksState();
+            alert(`تم حفظ الصفحة ${currentRevisionPage} بنجاح ✅`);
         }
 
         function changeRevisionPage(delta) {
             saveRevisionPageSilent();
-            let newPage = currentRevPage + delta;
-            if(newPage >= 1 && newPage <= 40) {
-                currentRevPage = newPage;
+            let newPage = currentRevisionPage + delta;
+            if (newPage >= 1 && newPage <= 40) {
+                currentRevisionPage = newPage;
                 loadRevisionPage();
             }
         }
 
         function goToRevisionPage() {
-            const val = parseInt(document.getElementById('revision-search-input').value);
-            if(val >= 1 && val <= 40) {
+            const input = document.getElementById('revision-search-input');
+            const page = parseInt(input.value);
+            if (page >= 1 && page <= 40) {
                 saveRevisionPageSilent();
-                currentRevPage = val;
+                currentRevisionPage = page;
                 loadRevisionPage();
+                input.value = '';
             }
         }
 
         function saveRevisionPageSilent() {
-            const text = document.getElementById('revision-text').value;
-            localStorage.setItem(`om_rev_${currentNotebook}_p_${currentRevPage}`, text);
-        }
-
-        // --- 4. Digital Notebook Logic (100 Pages) ---
-        let currentDigitalPage = 1;
-
-        function loadDigitalPage() {
-            document.getElementById('digital-page-num').innerText = `صفحة ${currentDigitalPage} من 100`;
-            const savedText = localStorage.getItem(`om_digital_p_${currentDigitalPage}`) || '';
-            document.getElementById('digital-text').value = savedText;
-        }
-
-        function saveDigitalPage() {
-            const text = document.getElementById('digital-text').value;
-            localStorage.setItem(`om_digital_p_${currentDigitalPage}`, text);
-            alert('تم حفظ الصفحة الرقمية بنجاح! 💾');
-        }
-
-        function changeDigitalPage(delta) {
-            saveDigitalPageSilent();
-            let newPage = currentDigitalPage + delta;
-            if(newPage >= 1 && newPage <= 100) {
-                currentDigitalPage = newPage;
-                loadDigitalPage();
+            const nb = notebooks.find(n => n.id === currentNotebookId);
+            if (nb) {
+                const text = document.getElementById('revision-text').value;
+                nb.pages[currentRevisionPage] = text;
+                saveNotebooksState();
             }
         }
 
-        function goToDigitalPage() {
-            const val = parseInt(document.getElementById('digital-search-input').value);
-            if(val >= 1 && val <= 100) {
-                saveDigitalPageSilent();
-                currentDigitalPage = val;
-                loadDigitalPage();
+        function downloadNotebook(id) {
+            const nb = notebooks.find(n => n.id === id);
+            if (!nb) return;
+
+            let content = `=== ${nb.name} ===\n\n`;
+            let hasContent = false;
+
+            for (let i = 1; i <= 40; i++) {
+                if (nb.pages[i] && nb.pages[i].trim() !== "") {
+                    content += `--- صفحة ${i} ---\n${nb.pages[i]}\n\n`;
+                    hasContent = true;
+                }
             }
-        }
 
-        function saveDigitalPageSilent() {
-            const text = document.getElementById('digital-text').value;
-            localStorage.setItem(`om_digital_p_${currentDigitalPage}`, text);
-        }
-
-        // --- 5. Pomodoro Logic ---
-        let timerInterval = null;
-        let timeRemaining = 0;
-        let pomoHistory = JSON.parse(localStorage.getItem('om_pomo_history')) || [];
-        let currentSessionName = "";
-
-        function startPomodoro() {
-            const nameInput = document.getElementById('session-name');
-            const durInput = document.getElementById('session-duration');
-
-            if(!nameInput.value.trim() || !durInput.value || durInput.value <= 0) {
-                alert('يرجى كتابة اسم الجلسة وتحديد المدة بالدقائق!');
+            if (!hasContent) {
+                alert("الكشكول فارغ! لا تتوفر معلومات لتنزيلها.");
                 return;
             }
 
-            currentSessionName = nameInput.value.trim();
-            timeRemaining = parseInt(durInput.value) * 60;
+            const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${nb.name}.txt`;
+            link.click();
+        }
+
+        // --- 4. Pomodoro Logic ---
+        let pomoTimer = null;
+        let pomoTimeLeft = 0;
+        let currentPomoSession = null;
+        let pomodoroHistory = JSON.parse(localStorage.getItem('om_pomo_history')) || [];
+
+        function startPomodoro() {
+            const nameInput = document.getElementById('session-name');
+            const durationInput = document.getElementById('session-duration');
+            
+            const name = nameInput.value.trim() || 'جلسة مذاكرة';
+            const duration = parseInt(durationInput.value);
+
+            if(!duration || duration <= 0) {
+                alert('الرجاء كتابة مدة الجلسة بالدقائق!');
+                return;
+            }
+
+            pomoTimeLeft = duration * 60;
+            currentPomoSession = {
+                id: Date.now(),
+                name: name,
+                duration: duration,
+                startTime: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+                status: 'running'
+            };
 
             document.getElementById('pomo-inputs').style.display = 'none';
             document.getElementById('pomo-controls').style.display = 'block';
 
             updateTimerDisplay();
-            timerInterval = setInterval(() => {
-                timeRemaining--;
+            pomoTimer = setInterval(() => {
+                pomoTimeLeft--;
                 updateTimerDisplay();
 
-                if(timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    completeSession(true);
+                if (pomoTimeLeft <= 0) {
+                    stopPomodoro(false);
                 }
             }, 1000);
         }
 
         function updateTimerDisplay() {
-            const mins = Math.floor(timeRemaining / 60);
-            const secs = timeRemaining % 60;
+            const minutes = Math.floor(pomoTimeLeft / 60);
+            const seconds = pomoTimeLeft % 60;
             document.getElementById('timer-display').innerText = 
-                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        function stopPomodoro(manual) {
-            clearInterval(timerInterval);
-            if(manual) {
-                completeSession(false);
+        function stopPomodoro(manualCancelled = false) {
+            clearInterval(pomoTimer);
+            pomoTimer = null;
+
+            if (currentPomoSession) {
+                currentPomoSession.status = manualCancelled ? 'failed' : 'completed';
+                pomodoroHistory.unshift(currentPomoSession);
+                localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
+                
+                if(!manualCancelled) {
+                    alert('🎉 تهانينا! أنجزت الجلسة بنجاح!');
+                }
             }
-        }
 
-        function completeSession(success) {
-            const startTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            pomoHistory.push({
-                name: currentSessionName,
-                completed: success,
-                time: startTime
-            });
-
-            localStorage.setItem('om_pomo_history', JSON.stringify(pomoHistory));
             document.getElementById('pomo-inputs').style.display = 'flex';
             document.getElementById('pomo-controls').style.display = 'none';
             document.getElementById('timer-display').innerText = '00:00';
-            document.getElementById('session-name').value = '';
-            document.getElementById('session-duration').value = '';
-
+            currentPomoSession = null;
             renderPomoHistory();
-
-            if(success) {
-                alert('🎉 أحسنت! انقضت مدة الجلسة بنجاح.');
-            } else {
-                alert('تم إنهاء الجلسة.');
-            }
         }
 
         function renderPomoHistory() {
             const tbody = document.getElementById('sessions-table-body');
             tbody.innerHTML = '';
 
-            let completedCount = 0;
-            let incompleteCount = 0;
+            let completed = 0;
+            let failed = 0;
 
-            pomoHistory.forEach((session, index) => {
-                if(session.completed) completedCount++;
-                else incompleteCount++;
+            pomodoroHistory.forEach((item, idx) => {
+                if(item.status === 'completed') completed++;
+                if(item.status === 'failed') failed++;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${session.name}</td>
-                    <td class="${session.completed ? 'status-completed' : 'status-failed'}">
-                        ${session.completed ? 'مكتملة ✓' : 'غير مكتملة ✕'}
+                    <td>${item.name}</td>
+                    <td class="${item.status === 'completed' ? 'status-completed' : 'status-failed'}">
+                        ${item.status === 'completed' ? 'ناجحة ✓' : 'غير مكتملة ✗'}
                     </td>
-                    <td>${session.time}</td>
+                    <td>${item.startTime}</td>
                     <td style="text-align: center;">
-                        <button class="btn-delete" onclick="deletePomoSession(${index})">🗑️</button>
+                        <button class="btn-delete" onclick="deletePomoSession(${idx})">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            document.getElementById('completed-count').innerText = completedCount;
-            document.getElementById('incomplete-count').innerText = incompleteCount;
+            document.getElementById('completed-count').innerText = completed;
+            document.getElementById('incomplete-count').innerText = failed;
         }
 
         function deletePomoSession(index) {
-            pomoHistory.splice(index, 1);
-            localStorage.setItem('om_pomo_history', JSON.stringify(pomoHistory));
+            pomodoroHistory.splice(index, 1);
+            localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
             renderPomoHistory();
         }
 
         function resetPomoDay() {
-            if(confirm('هل انت متأكد من مسح جميع سجلات جلسات اليوم؟')) {
-                pomoHistory = [];
-                localStorage.setItem('om_pomo_history', JSON.stringify(pomoHistory));
+            if(confirm('هل تريد مسح جميع سجلات الجلسات للبدء من جديد؟')) {
+                pomodoroHistory = [];
+                localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
                 renderPomoHistory();
+            }
+        }
+
+        // --- 5. Digital Notebook Logic ---
+        let currentDigitalPage = 1;
+        let digitalNotebookPages = JSON.parse(localStorage.getItem('om_digital_notebook')) || {};
+
+        function loadDigitalPage() {
+            document.getElementById('digital-page-num').innerText = `صفحة ${currentDigitalPage} من 100`;
+            const text = digitalNotebookPages[currentDigitalPage] || "";
+            document.getElementById('digital-text').value = text;
+        }
+
+        function saveDigitalPage() {
+            const text = document.getElementById('digital-text').value;
+            digitalNotebookPages[currentDigitalPage] = text;
+            localStorage.setItem('om_digital_notebook', JSON.stringify(digitalNotebookPages));
+            alert(`تم حفظ الصفحة ${currentDigitalPage} بنجاح 💾`);
+        }
+
+        function saveDigitalPageSilent() {
+            const text = document.getElementById('digital-text').value;
+            digitalNotebookPages[currentDigitalPage] = text;
+            localStorage.setItem('om_digital_notebook', JSON.stringify(digitalNotebookPages));
+        }
+
+        function changeDigitalPage(delta) {
+            saveDigitalPageSilent();
+            let newPage = currentDigitalPage + delta;
+            if (newPage >= 1 && newPage <= 100) {
+                currentDigitalPage = newPage;
+                loadDigitalPage();
+            }
+        }
+
+        function goToDigitalPage() {
+            const input = document.getElementById('digital-search-input');
+            const page = parseInt(input.value);
+            if (page >= 1 && page <= 100) {
+                saveDigitalPageSilent();
+                currentDigitalPage = page;
+                loadDigitalPage();
+                input.value = '';
             }
         }
     </script>
