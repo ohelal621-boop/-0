@@ -11,17 +11,39 @@
         body { 
             font-family: 'Tajawal', sans-serif; 
         }
-        /* خلفية اللابتوب والنظام */
+
+        /* خلفية نارية هادئة مع خطوط وتأثير شبكي مموج */
         .hero-bg {
-            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.95)), 
-                              url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920&auto=format&fit=crop');
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(234, 88, 12, 0.08) 0%, transparent 40%),
+                linear-gradient(135deg, rgba(15, 23, 42, 0.97), rgba(2, 6, 23, 0.99)),
+                repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.03) 0px, rgba(245, 158, 11, 0.03) 2px, transparent 2px, transparent 20px),
+                repeating-linear-gradient(-45deg, rgba(234, 88, 12, 0.02) 0px, rgba(234, 88, 12, 0.02) 2px, transparent 2px, transparent 20px);
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            position: relative;
         }
+
+        /* خطوط نار انسيابية متوهجة خلف العناصر */
+        .fiery-lines {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 30%, #020617 90%);
+            pointer-events: none;
+        }
+
         /* إضاءات خطوط برتقالية تتوهج */
         .orange-glow {
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+        }
+
+        @keyframes firePulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        .fire-flare {
+            animation: firePulse 4s infinite ease-in-out;
         }
     </style>
 </head>
@@ -52,53 +74,58 @@
         </div>
     </header>
 
-    <section class="hero-bg relative min-h-[85vh] flex items-center justify-center px-6 py-20 border-b border-amber-500/20">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+    <section class="hero-bg relative min-h-[85vh] flex items-center justify-center px-6 py-16 border-b border-amber-500/20 overflow-hidden">
+        
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/60 to-transparent"></div>
+        <div class="fiery-lines"></div>
 
-        <div class="max-w-5xl mx-auto text-center relative z-10">
-            <span class="bg-blue-950/80 text-amber-400 border border-amber-500/40 px-5 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2 mb-8 backdrop-blur-md orange-glow">
-                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                منظومة OM ZONE المتكاملة للحلول البرمجية
-            </span>
-
-            <h1 class="text-4xl md:text-7xl font-black leading-tight mb-8">
-                نصمم مستقبل أعمالك مع <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-400 to-orange-500">
-                    أنظمة OM ZONE الذكية
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-6">
+            
+            <div class="text-right">
+                <span class="bg-blue-950/80 text-amber-400 border border-amber-500/40 px-5 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2 mb-6 backdrop-blur-md orange-glow">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    منظومة OM ZONE المتكاملة للحلول البرمجية
                 </span>
-            </h1>
 
-            <p class="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-                منصة متخصصة في تطوير أنظمة إدارة العملاء (CRM)، نقاط البيع (POS)، وتطبيقات المواقع بأحدث التقنيات مع تصميم زجاجي عصري وأداء فائق السرعة.
-            </p>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
+                    نصمم مستقبل أعمالك مع <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-red-500">
+                        أنظمة OM ZONE الذكية
+                    </span>
+                </h1>
 
-            <div class="flex flex-wrap justify-center gap-5">
-                <a href="#contact" class="bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-extrabold px-9 py-4 rounded-xl shadow-xl hover:scale-105 transition border border-amber-300/40 orange-glow">
-                    استكشف نظام CRM
-                </a>
-                <a href="#qr-tool" class="bg-blue-950/60 hover:bg-blue-900/60 text-amber-400 border border-amber-500/30 px-9 py-4 rounded-xl font-bold backdrop-blur-md transition">
-                    أداة الـ QR Code
-                </a>
-            </div>
-        </div>
+                <p class="text-slate-300 text-lg lg:text-xl max-w-xl mb-8 leading-relaxed font-light">
+                    منصة متخصصة في تطوير أنظمة إدارة العملاء (CRM)، نقاط البيع (POS)، وتطبيقات المواقع بأحدث التقنيات مع تصميم زجاجي عصري وأداء فائق السرعة.
+                </p>
 
-        <div id="crm-preview" class="absolute -bottom-16 left-1/2 -translate-x-1/2 w-11/12 max-w-4xl hidden lg:block">
-            <div class="bg-slate-900/90 border-2 border-amber-500/40 rounded-2xl p-4 backdrop-blur-xl shadow-2xl orange-glow">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
-                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
-                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
-                    </div>
-                    <div class="text-xs font-mono text-amber-400/80 bg-slate-950 px-4 py-1 rounded-full border border-amber-500/20">
-                        https://crm.omzone.solutions
-                    </div>
-                </div>
-                <div class="pt-4 flex justify-between items-center text-xs text-slate-400">
-                    <span class="text-amber-400 font-bold">لوحة تحكم OM ZONE CRM</span>
-                    <span>المبيعات النشطة: +148% 🚀</span>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#contact" class="bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-extrabold px-8 py-4 rounded-xl shadow-xl hover:scale-105 transition border border-amber-300/40 orange-glow">
+                        استكشف نظام CRM
+                    </a>
+                    <a href="#qr-tool" class="bg-blue-950/60 hover:bg-blue-900/60 text-amber-400 border border-amber-500/30 px-8 py-4 rounded-xl font-bold backdrop-blur-md transition">
+                        أداة الـ QR Code
+                    </a>
                 </div>
             </div>
+
+            <div class="relative flex justify-center items-center">
+                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur-xl opacity-30 fire-flare"></div>
+                
+                <div class="relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-900/80 p-2 orange-glow max-w-lg w-full">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop" 
+                         alt="OM Zone Dashboard Preview" 
+                         class="rounded-xl w-full h-auto object-cover border border-amber-500/10">
+
+                    <div class="mt-3 px-3 py-2 bg-slate-950/90 rounded-lg flex justify-between items-center text-xs text-slate-400 border border-amber-500/20">
+                        <span class="text-amber-400 font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span>
+                            لوحة تحكم OM ZONE CRM
+                        </span>
+                        <span>مبيعات نشطة: +148% 🚀</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
