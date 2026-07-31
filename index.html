@@ -321,14 +321,8 @@
         /* Revision & Notebook Styles */
         .notebook-list {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .notebook-list {
-                grid-template-columns: 1fr;
-            }
         }
 
         .notebook-card {
@@ -336,40 +330,11 @@
             padding: 20px;
             border-radius: 12px;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
             align-items: center;
+            gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .action-icon-btn {
-            background: #334155;
-            border: none;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .action-icon-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
-        }
-
-        .btn-download-icon {
-            background-color: rgba(56, 189, 248, 0.15);
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-        }
-
-        .btn-open-icon {
-            background-color: rgba(234, 179, 8, 0.15);
-            color: var(--accent-yellow);
-            border: 1px solid var(--accent-yellow);
         }
 
         .page-editor {
@@ -577,7 +542,7 @@
                 <div>
                     <div class="card-icon">🎯</div>
                     <h2>OM Revision</h2>
-                    <p>مراجعاتك السريعة! 4 كشاكيل تتيح لك 40 صفحة لكل منها لتسجيل كل ما تحتاج.</p>
+                    <p>مراجعك السريعة! 4 كشاكيل تتيح لك 40 صفحة لكل منها لتسجيل كل ما تحتاج.</p>
                 </div>
                 <button onclick="switchView('revision-view')" class="btn">بدء المراجعة</button>
             </div>
@@ -735,6 +700,12 @@
             if(viewId === 'pomodoro-view') {
                 renderPomoHistory();
             }
+            if(viewId === 'notebook-view') {
+                loadDigitalPage();
+            }
+            if(viewId === 'revision-view') {
+                renderNotebooks();
+            }
         }
 
         // --- 1. Habit Tracker Logic ---
@@ -810,14 +781,14 @@
         // --- 2. Azkar & Tasbeeh Logic ---
         const azkarData = [
             {
-                text: "أصْبَحْنَا وَأصْبَحَ المُلْكُ للَّهِ، والحَمْدُ للَّهِ لا إلَهَ إلَّا اللَّهُ، وَحْدَهُ لا شَرِيكَ له، له المُلْكُ وَلَهُ الحَمْدُ وَهو علَى كُلِّ شيءٍ قَدِيرٌ...",
+                text: "أصْبَحْنَا وَأصْبَحَ المُلْكُ للَّهِ، والَحَمْدُ للَّهِ لا إلَهَ إلَّا اللَّهُ، وَحْدَهُ لا شَرِيكَ له، له المُلْكُ وَلَهُ الحَمْدُ وَهو علَى كُلِّ شيءٍ قَدِيرٌ...",
                 count: 1,
                 fadl: "من قالها حين يصبح أعطي خير ما في هذا اليوم وخير ما بعده."
             },
             {
                 text: "اللَّهُمَّ أنْتَ رَبِّي لا إلَهَ إلَّا أنْتَ، خَلَقْتَنِي وأنا عَبْدُكَ، وأنا علَى عَهْدِكَ ووَعْدِكَ ما اسْتَطَعْتُ، أعُوذُ بكَ مِن شَرِّ ما صَنَعْتُ، أبُوءُ لكَ بنِعْمَتِكَ عَلَيَّ، وأَبُوءُ لكَ بذَنْبِي فاغْفِرْ لِي، فإنَّه لا يَغْفِرُ الذُّنُوبَ إلَّا أنْتَ.",
                 count: 1,
-                fadl: " سيد الاستغفار: من قالها موقناً بها حين يصبح فمات من يومه دخل الجنة وكذلك حين يمسي."
+                fadl: "سيد الاستغفار: من قالها موقناً بها حين يصبح فمات من يومه دخل الجنة وكذلك حين يمسي."
             },
             {
                 text: "قراءة سورة الإخلاص، والمعوذتين (الفلق والناس).",
@@ -834,38 +805,21 @@
                 count: 3,
                 fadl: "من قالها حين يصبح وحين يمسي كان حقاً على الله أن يرضيه يوم القيامة."
             },
-   
-  {
-    "text": "سُبْحَانَ اللهِ وَبِحَمْدِهِ.",
-    "count": 100,
-    "fadl": "حُطَّت خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ البَحْرِ، وَلَمْ يَأْتِ أَحَدٌ يَوْمَ القِيَامَةِ بِأَفْضَلَ مِمَّا جَاءَ بِهِ إِلَّا أَحَدٌ قَالَ مِثْلَ مَا قَالَ أَوْ زَادَ."
-  },
-  {
-    "text": "أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ.",
-    "count": 100,
-    "fadl": "محو للذنوب وسبب لمغفرة الله وتيسير الأرزاق."
-  },
-  {
-    "text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
-    "count": 1,
-    "fadl": "من قالها حين يصبح أجير من الجن حتي يمسي ومن قالها حين يمسي أجير من الجن حتي يصبح"
-  },
-  {
-    "text": "أَصْبَحْنَا وَأَصْبَحَ المُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ.",
-    "count": 1
-  },
-  {
-    "text": "رَضِيتُ بِاللهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا وَرَسُولًا",
-    "count": 3,
-    "fadl": "من قالها حين يصبح وحين يمسي كان حقا علي الله ان يرضيه يوم القيامه."
-  },
-  {
-    "text": "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ",
-    "count": 4,
-    "fadl": "من قالها أعتقه الله من النار."
-  }
-
-            
+            {
+                text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ.",
+                count: 100,
+                fadl: "حُطَّت خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ البَحْرِ."
+            },
+            {
+                text: "أَسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ.",
+                count: 100,
+                fadl: "محو للذنوب وسبب لمغفرة الله وتيسير الأرزاق."
+            },
+            {
+                text: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+                count: 1,
+                fadl: "من قالها حين يصبح أجير من الجن حتى يمسي."
+            }
         ];
 
         function renderAzkar() {
@@ -876,12 +830,19 @@
                 card.className = 'azkar-card';
                 card.innerHTML = `
                     <div class="zekr-text">${item.text}</div>
-                    <div class="fadl"><b>فضل الذكر:</b> ${item.fadl}</div>
+                    ${item.fadl ? `<div class="fadl"><b>فضل الذكر:</b> ${item.fadl}</div>` : ''}
                     <div class="azkar-btn-group">
                         <button class="counter-btn" id="azkar-btn-${index}" onclick="decrementAzkar(${index}, ${item.count})">
                             المتبقي: <span id="azkar-count-${index}">${item.count}</span>
                         </button>
-                        <button class="reset-btn" onclick="resetAzkarCount(${index}, ${item.countجن
+                        <button class="reset-btn" onclick="resetAzkarCount(${index}, ${item.count})">إعادة ضبط</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function decrementAzkar(index, initialCount) {
             const countElement = document.getElementById(`azkar-count-${index}`);
             const button = document.getElementById(`azkar-btn-${index}`);
             let currentCount = parseInt(countElement.innerText);
@@ -914,55 +875,12 @@
                 const card = document.createElement('div');
                 card.className = 'notebook-card';
                 card.innerHTML = `
-                    <div>
-                        <h3>📔 كشكول ${i}</h3>
-                        <small style="color:var(--text-secondary)">40 صفحة</small>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button class="action-icon-btn btn-download-icon" onclick="downloadNotebook(${i})" title="تحميل الكشكول">
-                            📥 تنزيل
-                        </button>
-                        <button class="action-icon-btn btn-open-icon" onclick="openNotebook(${i})" title="فتح الكشكول للكتابة">
-                            📖 فتح
-                        </button>
-                    </div>
+                    <h3>📘 كشكول المراجعة ${i}</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">40 صفحة للملاحظات والقوانين</p>
+                    <button class="btn" style="background-color: var(--accent-yellow); color:#000;" onclick="openNotebook(${i})">فتح الكشكول</button>
                 `;
                 container.appendChild(card);
             }
-        }
-
-        function downloadNotebook(notebookNum) {
-            let fullContent = `=========================================\n`;
-            fullContent += `   محتوى كشكول المراجعة رقم (${notebookNum}) - OM ZONE   \n`;
-            fullContent += `=========================================\n\n`;
-
-            let hasContent = false;
-
-            for (let page = 1; page <= 40; page++) {
-                const key = `om_rev_${notebookNum}_${page}`;
-                const pageText = localStorage.getItem(key);
-
-                if (pageText && pageText.trim() !== "") {
-                    hasContent = true;
-                    fullContent += `--- [ صفحة ${page} ] ---\n`;
-                    fullContent += `${pageText}\n\n`;
-                }
-            }
-
-            if (!hasContent) {
-                alert(`كشكول ${notebookNum} فارغ حالياً! قم بكتابة وتجميع ملاحظات أولاً لتتمكن من التنزيل.`);
-                return;
-            }
-
-            const bom = '\uFEFF';
-            const blob = new Blob([bom + fullContent], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `كشكول_مراجعة_${notebookNum}.txt`;
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
 
         function openNotebook(num) {
@@ -974,138 +892,174 @@
         }
 
         function closeRevisionEditor() {
-            document.getElementById('notebooks-list').style.display = 'grid';
             document.getElementById('revision-editor').style.display = 'none';
-        }
-
-        function changeRevisionPage(delta) {
-            saveRevisionPage(false);
-            currentRevPage += delta;
-            if(currentRevPage < 1) currentRevPage = 1;
-            if(currentRevPage > 40) currentRevPage = 40;
-            loadRevisionPage();
-        }
-
-        function goToRevisionPage() {
-            const pageInput = document.getElementById('revision-search-input');
-            const pageNum = parseInt(pageInput.value);
-            if(pageNum >= 1 && pageNum <= 40) {
-                saveRevisionPage(false);
-                currentRevPage = pageNum;
-                loadRevisionPage();
-                pageInput.value = '';
-            } else {
-                alert('يرجى إدخال رقم صفحة صحيح بين 1 و 40');
-            }
+            document.getElementById('notebooks-list').style.display = 'grid';
         }
 
         function loadRevisionPage() {
-            document.getElementById('revision-page-num').innerText = `كشكول ${currentNotebook} - صفحة ${currentRevPage} من 40`;
-            const key = `om_rev_${currentNotebook}_${currentRevPage}`;
-            document.getElementById('revision-text').value = localStorage.getItem(key) || "";
+            document.getElementById('revision-page-num').innerText = `صفحة ${currentRevPage} من 40 (كشكول ${currentNotebook})`;
+            const savedText = localStorage.getItem(`om_rev_${currentNotebook}_p_${currentRevPage}`) || '';
+            document.getElementById('revision-text').value = savedText;
         }
 
-        function saveRevisionPage(showAlert = true) {
-            if(!currentNotebook) return;
-            const key = `om_rev_${currentNotebook}_${currentRevPage}`;
+        function saveRevisionPage() {
             const text = document.getElementById('revision-text').value;
-            localStorage.setItem(key, text);
-            if(showAlert) alert('تم حفظ الصفحة بنجاح! 💾');
+            localStorage.setItem(`om_rev_${currentNotebook}_p_${currentRevPage}`, text);
+            alert('تم حفظ الصفحة بنجاح! 💾');
         }
-        renderNotebooks();
 
-        // --- 4. Pomodoro Logic ---
-        let pomoInterval = null;
+        function changeRevisionPage(delta) {
+            saveRevisionPageSilent();
+            let newPage = currentRevPage + delta;
+            if(newPage >= 1 && newPage <= 40) {
+                currentRevPage = newPage;
+                loadRevisionPage();
+            }
+        }
+
+        function goToRevisionPage() {
+            const val = parseInt(document.getElementById('revision-search-input').value);
+            if(val >= 1 && val <= 40) {
+                saveRevisionPageSilent();
+                currentRevPage = val;
+                loadRevisionPage();
+            }
+        }
+
+        function saveRevisionPageSilent() {
+            const text = document.getElementById('revision-text').value;
+            localStorage.setItem(`om_rev_${currentNotebook}_p_${currentRevPage}`, text);
+        }
+
+        // --- 4. Digital Notebook Logic (100 Pages) ---
+        let currentDigitalPage = 1;
+
+        function loadDigitalPage() {
+            document.getElementById('digital-page-num').innerText = `صفحة ${currentDigitalPage} من 100`;
+            const savedText = localStorage.getItem(`om_digital_p_${currentDigitalPage}`) || '';
+            document.getElementById('digital-text').value = savedText;
+        }
+
+        function saveDigitalPage() {
+            const text = document.getElementById('digital-text').value;
+            localStorage.setItem(`om_digital_p_${currentDigitalPage}`, text);
+            alert('تم حفظ الصفحة الرقمية بنجاح! 💾');
+        }
+
+        function changeDigitalPage(delta) {
+            saveDigitalPageSilent();
+            let newPage = currentDigitalPage + delta;
+            if(newPage >= 1 && newPage <= 100) {
+                currentDigitalPage = newPage;
+                loadDigitalPage();
+            }
+        }
+
+        function goToDigitalPage() {
+            const val = parseInt(document.getElementById('digital-search-input').value);
+            if(val >= 1 && val <= 100) {
+                saveDigitalPageSilent();
+                currentDigitalPage = val;
+                loadDigitalPage();
+            }
+        }
+
+        function saveDigitalPageSilent() {
+            const text = document.getElementById('digital-text').value;
+            localStorage.setItem(`om_digital_p_${currentDigitalPage}`, text);
+        }
+
+        // --- 5. Pomodoro Logic ---
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let pomoHistory = JSON.parse(localStorage.getItem('om_pomo_history')) || [];
+        let currentSessionName = "";
 
         function startPomodoro() {
-            const name = document.getElementById('session-name').value.trim() || "جلسة تركيز";
-            const mins = parseInt(document.getElementById('session-duration').value);
+            const nameInput = document.getElementById('session-name');
+            const durInput = document.getElementById('session-duration');
 
-            if(!mins || mins <= 0) {
-                alert("يرجى إدخال مدة صحيحة بالجلسة!");
+            if(!nameInput.value.trim() || !durInput.value || durInput.value <= 0) {
+                alert('يرجى كتابة اسم الجلسة وتحديد المدة بالدقائق!');
                 return;
             }
 
-            const startTimeStr = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            const endTime = Date.now() + mins * 60 * 1000;
-            const sessionData = { name, endTime, duration: mins, startTime: startTimeStr };
-            localStorage.setItem('om_active_pomo', JSON.stringify(sessionData));
-
-            initPomoUI();
-        }
-
-        function initPomoUI() {
-            const activeSession = JSON.parse(localStorage.getItem('om_active_pomo'));
-            if(!activeSession) return;
+            currentSessionName = nameInput.value.trim();
+            timeRemaining = parseInt(durInput.value) * 60;
 
             document.getElementById('pomo-inputs').style.display = 'none';
             document.getElementById('pomo-controls').style.display = 'block';
 
-            if(pomoInterval) clearInterval(pomoInterval);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
 
-            pomoInterval = setInterval(() => {
-                const remaining = Math.round((activeSession.endTime - Date.now()) / 1000);
-                if(remaining <= 0) {
-                    clearInterval(pomoInterval);
-                    alert(`🎉 تهانينا! انتهت جلسة: ${activeSession.name}`);
-                    savePomoHistory(activeSession.name, true, activeSession.startTime);
-                    resetPomoUI();
-                } else {
-                    const m = Math.floor(remaining / 60).toString().padStart(2, '0');
-                    const s = (remaining % 60).toString().padStart(2, '0');
-                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                if(timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    completeSession(true);
                 }
             }, 1000);
         }
 
-        function stopPomodoro(manual = true) {
-            const activeSession = JSON.parse(localStorage.getItem('om_active_pomo'));
-            if(activeSession) {
-                savePomoHistory(activeSession.name, false, activeSession.startTime);
-            }
-            clearInterval(pomoInterval);
-            resetPomoUI();
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemaining / 60);
+            const secs = timeRemaining % 60;
+            document.getElementById('timer-display').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        function resetPomoUI() {
-            localStorage.removeItem('om_active_pomo');
-            document.getElementById('timer-display').innerText = "00:00";
+        function stopPomodoro(manual) {
+            clearInterval(timerInterval);
+            if(manual) {
+                completeSession(false);
+            }
+        }
+
+        function completeSession(success) {
+            const startTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            pomoHistory.push({
+                name: currentSessionName,
+                completed: success,
+                time: startTime
+            });
+
+            localStorage.setItem('om_pomo_history', JSON.stringify(pomoHistory));
             document.getElementById('pomo-inputs').style.display = 'flex';
             document.getElementById('pomo-controls').style.display = 'none';
-            renderPomoHistory();
-        }
+            document.getElementById('timer-display').innerText = '00:00';
+            document.getElementById('session-name').value = '';
+            document.getElementById('session-duration').value = '';
 
-        function savePomoHistory(name, completed, startTime) {
-            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
-            history.unshift({
-                name: name,
-                completed: completed,
-                time: startTime || new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
-            });
-            localStorage.setItem('om_pomo_history_v2', JSON.stringify(history));
+            renderPomoHistory();
+
+            if(success) {
+                alert('🎉 أحسنت! انقضت مدة الجلسة بنجاح.');
+            } else {
+                alert('تم إنهاء الجلسة.');
+            }
         }
 
         function renderPomoHistory() {
-            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
             const tbody = document.getElementById('sessions-table-body');
             tbody.innerHTML = '';
 
             let completedCount = 0;
             let incompleteCount = 0;
 
-            history.forEach((session, index) => {
-                if (session.completed) completedCount++;
+            pomoHistory.forEach((session, index) => {
+                if(session.completed) completedCount++;
                 else incompleteCount++;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${session.name}</td>
                     <td class="${session.completed ? 'status-completed' : 'status-failed'}">
-                        ${session.completed ? 'مكتملة ✓' : 'غير مكتملة ✗'}
+                        ${session.completed ? 'مكتملة ✓' : 'غير مكتملة ✕'}
                     </td>
                     <td>${session.time}</td>
                     <td style="text-align: center;">
-                        <button class="btn-delete" onclick="deletePomoSession(${index})" title="حذف الجلسة">🗑️</button>
+                        <button class="btn-delete" onclick="deletePomoSession(${index})">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1116,61 +1070,18 @@
         }
 
         function deletePomoSession(index) {
-            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
-            history.splice(index, 1);
-            localStorage.setItem('om_pomo_history_v2', JSON.stringify(history));
+            pomoHistory.splice(index, 1);
+            localStorage.setItem('om_pomo_history', JSON.stringify(pomoHistory));
             renderPomoHistory();
         }
 
         function resetPomoDay() {
-            if(confirm("هل أنت تأكد من إعادة الضبط ومسح سجل الجلسات بالكامل؟")) {
-                localStorage.removeItem('om_pomo_history_v2');
+            if(confirm('هل انت متأكد من مسح جميع سجلات جلسات اليوم؟')) {
+                pomoHistory = [];
+                localStorage.setItem('om_pomo_history', JSON.stringify(pomoHistory));
                 renderPomoHistory();
             }
         }
-
-        // Auto restore active timer if running
-        if(localStorage.getItem('om_active_pomo')) {
-            initPomoUI();
-        }
-
-        // --- 5. Digital Notebook Logic (100 Pages) ---
-        let currentDigitalPage = 1;
-
-        function changeDigitalPage(delta) {
-            saveDigitalPage(false);
-            currentDigitalPage += delta;
-            if(currentDigitalPage < 1) currentDigitalPage = 1;
-            if(currentDigitalPage > 100) currentDigitalPage = 100;
-            loadDigitalPage();
-        }
-
-        function goToDigitalPage() {
-            const input = document.getElementById('digital-search-input');
-            const pageNum = parseInt(input.value);
-            if(pageNum >= 1 && pageNum <= 100) {
-                saveDigitalPage(false);
-                currentDigitalPage = pageNum;
-                loadDigitalPage();
-                input.value = '';
-            } else {
-                alert('يرجى إدخال رقم صفحة بين 1 و 100');
-            }
-        }
-
-        function loadDigitalPage() {
-            document.getElementById('digital-page-num').innerText = `صفحة ${currentDigitalPage} من 100`;
-            const key = `om_digital_note_${currentDigitalPage}`;
-            document.getElementById('digital-text').value = localStorage.getItem(key) || "";
-        }
-
-        function saveDigitalPage(showAlert = true) {
-            const key = `om_digital_note_${currentDigitalPage}`;
-            const text = document.getElementById('digital-text').value;
-            localStorage.setItem(key, text);
-            if(showAlert) alert('تم حفظ ملاحظتك بنجاح! 💾');
-        }
-        loadDigitalPage();
     </script>
 </body>
 </html>
