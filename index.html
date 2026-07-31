@@ -19,9 +19,11 @@
                 <span>⚡ DevTech Solutions</span>
             </div>
             <nav class="hidden md:flex gap-8 font-medium text-slate-300">
+                <a href="#" class="hover:text-indigo-400 transition">الرئيسية</a>
                 <a href="#services" class="hover:text-indigo-400 transition">الخدمات</a>
-                <a href="#qr-tool" class="hover:text-indigo-400 transition">أداة QR المجانية</a>
-                <a href="#contact" class="hover:text-indigo-400 transition">طلب استشارة</a>
+                <a href="#portfolio" class="hover:text-indigo-400 transition">أعمالنا</a>
+                <a href="#about" class="hover:text-indigo-400 transition">من نحن</a>
+                <a href="#blog" class="hover:text-indigo-400 transition">المدونة</a>
             </nav>
             <a href="#contact" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-600/30">
                 ابدأ مشروعك
@@ -155,10 +157,8 @@
                 alert('تنبيه: ميزة الـ Dynamic QR Code تتطلب تسجيل حساب لتتبع الإحصائيات وتحرير الرابط لاحقاً!');
             }
 
-            // تفريغ المكان قبل توليد رمز جديد
             qrcodeContainer.innerHTML = "";
 
-            // توليد الـ QR
             qrcodeObj = new QRCode(qrcodeContainer, {
                 text: inputVal,
                 width: 160,
@@ -169,7 +169,6 @@
             });
         }
 
-        // توليد رمز افتراضي عند التحميل
         window.onload = function() {
             document.getElementById('qr-input').value = "https://example.com";
             generateQRCode();
