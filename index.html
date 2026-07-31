@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حلول للتحول الرقمي والبرمجيات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 text-2xl font-extrabold text-indigo-500">
+                <span>⚡ DevTech Solutions</span>
+            </div>
+            <nav class="hidden md:flex gap-8 font-medium text-slate-300">
+                <a href="#services" class="hover:text-indigo-400 transition">الخدمات</a>
+                <a href="#qr-tool" class="hover:text-indigo-400 transition">أداة QR المجانية</a>
+                <a href="#contact" class="hover:text-indigo-400 transition">طلب استشارة</a>
+            </nav>
+            <a href="#contact" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-600/30">
+                ابدأ مشروعك
+            </a>
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-6 py-20 text-center">
+        <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-4 py-1.5 rounded-full text-sm font-semibold inline-block mb-6">
+            🚀 شركاؤك في التحول الرقمي وتطوير الأنظمة
+        </span>
+        <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6">
+            نحول أفكارك إلى <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">حلول برمجية ذكية</span>
+        </h1>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-10">
+            نقدم أفضل الأنظمة المخصصة (CRM, POS, HR)، تطوير المواقع والتطبيقات، وتهيئة محركات البحث لمساعدة عملك على النمو والتوسع.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="#qr-tool" class="bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:opacity-90 transition">
+                جرب أداة الـ QR Code مجاناً
+            </a>
+            <a href="#services" class="border border-slate-700 hover:border-slate-500 text-slate-300 px-8 py-4 rounded-xl font-bold transition">
+                استكشف خدماتنا
+            </a>
+        </div>
+    </section>
+
+    <section id="qr-tool" class="max-w-4xl mx-auto px-6 py-12 my-10 bg-slate-800/50 border border-slate-700/50 rounded-3xl backdrop-blur">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">📱 صانع الـ QR Code التفاعلي</h2>
+            <p class="text-slate-400 text-sm">أنشئ رمز QR مجاناً لموقعك أو أعمالك بسهولة</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-slate-300">الرابط أو النص المطلوب:</label>
+                    <input type="text" id="qr-input" placeholder="https://yourwebsite.com" 
+                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-indigo-500 transition">
+                </div>
+                
+                <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-bold bg-indigo-500 text-white px-2 py-0.5 rounded">PRO</span>
+                            <span class="text-sm font-bold mr-2 text-indigo-300">Dynamic QR Code</span>
+                        </div>
+                        <input type="checkbox" id="dynamic-toggle" class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">
+                        يتيح لك تغيير الرابط مستقبلاً دون تغيير الرمز المطبوع مع إحصائيات التتبع (يتطلب تسجيل حساب).
+                    </p>
+                </div>
+
+                <button onclick="generateQRCode()" class="w-full bg-indigo-600 hover:bg-indigo-500 font-bold py-3 rounded-xl transition">
+                    توليد الرمز الآن
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-slate-700/50 pt-6 md:pt-0">
+                <div id="qrcode" class="p-4 bg-white rounded-2xl shadow-xl flex items-center justify-center min-w-[180px] min-h-[180px]">
+                    </div>
+                <p class="text-xs text-slate-400 mt-4 text-center">قم بمسح الرمز للكشف عن الرابط</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="max-w-7xl mx-auto px-6 py-16">
+        <h2 class="text-3xl font-bold text-center mb-12">خدماتنا التقنية المتكاملة</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-2xl">
+                <div class="text-3xl mb-4">💻</div>
+                <h3 class="text-xl font-bold mb-2">تطوير المواقع والتطبيقات</h3>
+                <p class="text-slate-400 text-sm">بناء منصات فائقة السرعة معتمدة على Next.js وReact وتصميم متجاوب بالكامل.</p>
+            </div>
+            <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-2xl">
+                <div class="text-3xl mb-4">⚙️</div>
+                <h3 class="text-xl font-bold mb-2">حلول إدارة الأعمال (CRM & POS)</h3>
+                <p class="text-slate-400 text-sm">أنظمة مخصصة لشبكات المبيعات والموارد البشرية ولوحات تحكم لإدارة أعمالك بفعالية.</p>
+            </div>
+            <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-2xl">
+                <div class="text-3xl mb-4">🚀</div>
+                <h3 class="text-xl font-bold mb-2">تحسين محركات البحث (SEO)</h3>
+                <p class="text-slate-400 text-sm">استراتيجيات On-Page وOff-Page لضمان تصدر موقعك لنتائج البحث الأولى.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="max-w-3xl mx-auto px-6 py-16">
+        <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 p-8 rounded-3xl">
+            <h2 class="text-2xl font-bold text-center mb-2">احصل على استشارة مجانية لمشروعك</h2>
+            <p class="text-slate-400 text-center text-sm mb-6">اترك بياناتك وسيتواصل معك فريقنا التقني فوراً</p>
+            
+            <form class="space-y-4" onsubmit="event.preventDefault(); alert('تم إرسال الطلب وربطه بنظام الـ CRM بنجاح!');">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input type="text" placeholder="الاسم الكامل" required class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500">
+                    <input type="email" placeholder="البريد الإلكتروني" required class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500">
+                </div>
+                <select class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 focus:outline-none focus:border-indigo-500">
+                    <option>اختر الخدمة المطلوبة...</option>
+                    <option>نظام CRM / POS / HR</option>
+                    <option>تطوير موقع أو تطبيق</option>
+                    <option>خدمات UI/UX & SEO</option>
+                </select>
+                <textarea rows="3" placeholder="تفاصيل إضافية عن مشروعك..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500"></textarea>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 font-bold py-3.5 rounded-xl transition shadow-lg shadow-indigo-600/30">
+                    إرسال الطلب
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+        <p>© 2026 جميع الحقوق محفوظة لشركة DevTech Solutions.</p>
+    </footer>
+
+    <script>
+        let qrcodeObj = null;
+
+        function generateQRCode() {
+            const inputVal = document.getElementById('qr-input').value.trim();
+            const qrcodeContainer = document.getElementById('qrcode');
+            const isDynamic = document.getElementById('dynamic-toggle').checked;
+
+            if (!inputVal) {
+                alert('يرجى إدخال رابط أو نص أولاً!');
+                return;
+            }
+
+            if (isDynamic) {
+                alert('تنبيه: ميزة الـ Dynamic QR Code تتطلب تسجيل حساب لتتبع الإحصائيات وتحرير الرابط لاحقاً!');
+            }
+
+            // تفريغ المكان قبل توليد رمز جديد
+            qrcodeContainer.innerHTML = "";
+
+            // توليد الـ QR
+            qrcodeObj = new QRCode(qrcodeContainer, {
+                text: inputVal,
+                width: 160,
+                height: 160,
+                colorDark : "#0f172a",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        // توليد رمز افتراضي عند التحميل
+        window.onload = function() {
+            document.getElementById('qr-input').value = "https://example.com";
+            generateQRCode();
+        };
+    </script>
+</body>
+</html>
