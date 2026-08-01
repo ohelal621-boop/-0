@@ -781,39 +781,40 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
             if (nb) { nb.pages[currentRevisionPage] = document.getElementById('revision-text').value; saveNotebooksState(); }
         }
        // PDF Download with Arabic Support
-        async function downloadNotebook(id) {
-            const nb = notebooks.find(n => n.id === id);
-            if (!nb) return;
+        function downloadNotebook(notebookNum) {
+            let fullContent = `=========================================\n`;
+            fullContent += `   محتوى كشكول المراجعة رقم (${notebookNum}) - OM ZONE   \n`;
+            fullContent += `=========================================\n\n`;
+
             let hasContent = false;
-            for (let i = 1; i <= 40; i++) { if (nb.pages[i] && nb.pages[i].trim() !== "") { hasContent = true; break; } }
-            if (!hasContent) { alert("الكشكول فارغ! لا تتوفر معلومات لتنزيلها."); return; }
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+            for (let page = 1; page <= 40; page++) {
+                const key = `om_rev_${notebookNum}_${page}`;
+                const pageText = localStorage.getItem(key);
 
-            // Add Arabic font support using a base64 font or standard approach
-            // We'll use the default font but handle RTL text by reversing words
-            doc.setFontSize(18);
-            doc.text(nb.name, 105, 15, { align: 'center' });
-            doc.setFontSize(12);
-
-            let y = 30;
-            for (let i = 1; i <= 40; i++) {
-                if (nb.pages[i] && nb.pages[i].trim() !== "") {
-                    if (y > 270) { doc.addPage(); y = 20; }
-                    doc.setFontSize(14);
-                    doc.setTextColor(234, 179, 8);
-                    doc.text(`صفحة ${i}`, 190, y, { align: 'right' });
-                    y += 8;
-                    doc.setTextColor(0, 0, 0);
-                    doc.setFontSize(11);
-                    const lines = doc.splitTextToSize(nb.pages[i], 180);
-                    doc.text(lines, 190, y, { align: 'right' });
-                    y += lines.length * 5 + 10;
+                if (pageText && pageText.trim() !== "") {
+                    hasContent = true;
+                    fullContent += `--- [ صفحة ${page} ] ---\n`;
+                    fullContent += `${pageText}\n\n`;
                 }
             }
-            doc.save(`${nb.name}.pdf`);
+
+            if (!hasContent) {
+                alert(`كشكول ${notebookNum} فارغ حالياً! قم بكتابة وتجميع ملاحظات أولاً لتتمكن من التنزيل.`);
+                return;
+            }
+
+            const bom = '\uFEFF';
+            const blob = new Blob([bom + fullContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `كشكول_مراجعة_${notebookNum}.txt`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
+
         
         // --- 4. Pomodoro Logic ---
         let pomoTimer = null;
