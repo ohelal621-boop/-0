@@ -145,6 +145,11 @@
     </style>
 <base target="_blank">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -783,7 +788,7 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         }
 
         // PDF Download with Arabic Support
-       async function downloadNotebook(id) {
+      async function downloadNotebook(id) {
     const nb = notebooks.find(n => n.id === id);
     if (!nb) return;
 
@@ -800,21 +805,23 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         return;
     }
 
-    // 1. إنشاء عنصر HTML مؤقت لتنسيق الكشكول بالعربي بأسلوب صحيح
+    // 1. إنشاء عنصر HTML مؤقت
     const element = document.createElement('div');
     element.style.direction = 'rtl';
-    element.style.fontFamily = 'Arial, sans-serif';
-    element.style.padding = '20px';
-    element.style.color = '#000';
+    element.style.fontFamily = "'Cairo', sans-serif"; // استخدام الخط الجديد
+    element.style.padding = '30px';
+    element.style.backgroundColor = '#ffffff';
+    element.style.color = '#000000';
+    element.style.width = '750px'; 
 
-    let contentHtml = `<h1 style="text-align: center; color: #333; font-size: 24px; margin-bottom: 20px;">${nb.name}</h1>`;
+    let contentHtml = `<h1 style="text-align: center; color: #111827; font-size: 26px; margin-bottom: 30px; font-weight: 700;">${nb.name}</h1>`;
 
     for (let i = 1; i <= 40; i++) {
         if (nb.pages[i] && nb.pages[i].trim() !== "") {
             contentHtml += `
-                <div style="margin-bottom: 25px; page-break-inside: avoid;">
-                    <h3 style="color: #eab308; font-size: 18px; margin-bottom: 8px;">صفحة ${i}</h3>
-                    <p style="font-size: 14px; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word;">${nb.pages[i]}</p>
+                <div style="margin-bottom: 25px; page-break-inside: avoid; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px;">
+                    <h3 style="color: #eab308; font-size: 18px; margin-bottom: 10px; font-weight: 600;">صفحة ${i}</h3>
+                    <p style="font-size: 15px; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; color: #374151;">${nb.pages[i]}</p>
                 </div>
             `;
         }
@@ -822,6 +829,27 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
 
     element.innerHTML = contentHtml;
 
+    // 2. إعدادات html2pdf مع Canvas
+    const opt = {
+        margin:       10,
+        filename:     `${nb.name}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { 
+            scale: 2,           // لضمان وضوح النص
+            useCORS: true,      // لتحميل خط Google Fonts
+            letterRendering: true
+        },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // 3. التنزيل
+    try {
+        await html2pdf().set(opt).from(element).save();
+    } catch (error) {
+        console.error("حدث خطأ أثناء تنزيل الـ PDF:", error);
+    }
+}
+  
     // 2. إعدادات خيارات الـ PDF
     const opt = {
         margin:       10,
