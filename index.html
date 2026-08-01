@@ -143,13 +143,7 @@
         .rules-box ol { padding-right: 20px; line-height: 2; color: var(--text-secondary); }
         .rules-box ol li { margin-bottom: 8px; }
     </style>
-<base target="_blank">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -787,7 +781,7 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
             if (nb) { nb.pages[currentRevisionPage] = document.getElementById('revision-text').value; saveNotebooksState(); }
         }
 
-      async function downloadNotebook(id) {
+ async function downloadNotebook(id) {
     const nb = notebooks.find(n => n.id === id);
     if (!nb) return;
 
@@ -850,6 +844,7 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         document.body.removeChild(element);
     }
 }
+        
         // --- 4. Pomodoro Logic ---
         let pomoTimer = null;
         let pomoTimeLeft = 0;
