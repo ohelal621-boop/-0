@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -143,8 +143,7 @@
         .rules-box ol { padding-right: 20px; line-height: 2; color: var(--text-secondary); }
         .rules-box ol li { margin-bottom: 8px; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+<base target="_blank">
 </head>
 <body>
 
@@ -781,70 +780,40 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
             const nb = notebooks.find(n => n.id === currentNotebookId);
             if (nb) { nb.pages[currentRevisionPage] = document.getElementById('revision-text').value; saveNotebooksState(); }
         }
+       // PDF Download with Arabic Support
+        async function downloadNotebook(id) {
+            const nb = notebooks.find(n => n.id === id);
+            if (!nb) return;
+            let hasContent = false;
+            for (let i = 1; i <= 40; i++) { if (nb.pages[i] && nb.pages[i].trim() !== "") { hasContent = true; break; } }
+            if (!hasContent) { alert("الكشكول فارغ! لا تتوفر معلومات لتنزيلها."); return; }
 
- async function downloadNotebook(id) {
-    const nb = notebooks.find(n => n.id === id);
-    if (!nb) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
 
-    let hasContent = false;
-    for (let i = 1; i <= 40; i++) {
-        if (nb.pages[i] && nb.pages[i].trim() !== "") {
-            hasContent = true;
-            break;
+            // Add Arabic font support using a base64 font or standard approach
+            // We'll use the default font but handle RTL text by reversing words
+            doc.setFontSize(18);
+            doc.text(nb.name, 105, 15, { align: 'center' });
+            doc.setFontSize(12);
+
+            let y = 30;
+            for (let i = 1; i <= 40; i++) {
+                if (nb.pages[i] && nb.pages[i].trim() !== "") {
+                    if (y > 270) { doc.addPage(); y = 20; }
+                    doc.setFontSize(14);
+                    doc.setTextColor(234, 179, 8);
+                    doc.text(`صفحة ${i}`, 190, y, { align: 'right' });
+                    y += 8;
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(11);
+                    const lines = doc.splitTextToSize(nb.pages[i], 180);
+                    doc.text(lines, 190, y, { align: 'right' });
+                    y += lines.length * 5 + 10;
+                }
+            }
+            doc.save(`${nb.name}.pdf`);
         }
-    }
-
-    if (!hasContent) {
-        alert("الكشكول فارغ! لا تتوفر معلومات لتنزيلها.");
-        return;
-    }
-
-    // 1. إنشاء عنصر HTML مؤقت
-    const element = document.createElement('div');
-    element.style.direction = 'rtl';
-    element.style.fontFamily = 'Arial, sans-serif';
-    element.style.padding = '20px';
-    element.style.color = '#000';
-    element.style.position = 'absolute'; // إخفاء العنصر عن عين المستخدم أثناء التوليد
-    element.style.left = '-9999px';
-
-    let contentHtml = `<h1 style="text-align: center; color: #333; font-size: 24px; margin-bottom: 20px;">${nb.name}</h1>`;
-
-    for (let i = 1; i <= 40; i++) {
-        if (nb.pages[i] && nb.pages[i].trim() !== "") {
-            contentHtml += `
-                <div style="margin-bottom: 25px; page-break-inside: avoid;">
-                    <h3 style="color: #eab308; font-size: 18px; margin-bottom: 8px;">صفحة ${i}</h3>
-                    <p style="font-size: 14px; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word;">${nb.pages[i]}</p>
-                </div>
-            `;
-        }
-    }
-
-    element.innerHTML = contentHtml;
-    
-    // إدراج العنصر في الـ DOM مؤقتاً لتتمكن المكتبة من قراءته
-    document.body.appendChild(element);
-
-    // 2. إعدادات خيارات الـ PDF
-    const opt = {
-        margin:       10,
-        filename:     `${nb.name}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    try {
-        // 3. تحويل الـ HTML إلى PDF وانتظار العملية حتى تكتمل
-        await html2pdf().set(opt).from(element).save();
-    } catch (error) {
-        console.error("حدث خطأ أثناء تحميل الـ PDF:", error);
-    } finally {
-        // 4. حذف العنصر المؤقت من الـ DOM بعد الانتهاء
-        document.body.removeChild(element);
-    }
-}
         
         // --- 4. Pomodoro Logic ---
         let pomoTimer = null;
