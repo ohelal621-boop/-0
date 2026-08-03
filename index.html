@@ -876,7 +876,6 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
             document.body.removeChild(link);
         }
 
-        // --- 4. Pomo
           // --- 4. Pomodoro Logic (FIXED: works across tabs using Date.now()) ---
         let pomoTimer = null;
         let pomoEndTime = 0; // Timestamp when timer should end
@@ -910,7 +909,7 @@ function startPomodoro() {
     document.getElementById('pomo-inputs').style.display = 'none';
     document.getElementById('pomo-controls').style.display = 'block';
     
-    updateTimerDisplay(); // أو الدالة التي تبدأ العد لديك
+runTimer(); // تشغيل العداد الفعلي
 }
 
         function updateTimerDisplay() {
