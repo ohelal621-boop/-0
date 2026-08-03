@@ -881,35 +881,35 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         let pomoEndTime = 0; // Timestamp when timer should end
         let currentPomoSession = null;
         let pomodoroHistory = JSON.parse(localStorage.getItem('om_pomo_history')) || [];
-function startPomodoro() {
-    const nameInput = document.getElementById('session-name');
-    const durationInput = document.getElementById('session-duration');
-    const name = nameInput.value.trim() || 'جلسة مذاكرة';
-    const duration = parseInt(durationInput.value);
+function stopPomodoro(manualCancelled = false) {
+    clearInterval(pomoTimer);
+    pomoTimer = null;
     
-    if(!duration || duration <= 0) { 
-        alert('الرجاء كتابة مدة الجلسة بالدقائق!'); 
-        return; 
+    if (currentPomoSession) {
+        currentPomoSession.status = manualCancelled ? 'failed' : 'completed';
+        pomodoroHistory.unshift(currentPomoSession);
+        localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
+        
+        if(!manualCancelled) {
+            playAlarmSound();
+            alert('🎉 تهانينا! أنجزت الجلسة بنجاح!');
+        }
     }
 
-    // حساب وقت الانتهاء بناءً على التوقيت الحالي
-    pomoEndTime = Date.now() + (duration * 60 * 1000);
-    currentPomoSession = { 
-        id: Date.now(), 
-        name: name, 
-        duration: duration, 
-        startTime: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), 
-        status: 'running' 
-    };
+    // 🧹 مسح بيانات الجلسة النشطة حتى لا تعود عند تحديث الصفحة
+    clearActiveSession();
 
-    // 💾 حفظ بيانات الجلسة الحالية في localStorage
-    localStorage.setItem('active_pomo_session', JSON.stringify(currentPomoSession));
-    localStorage.setItem('active_pomo_endtime', pomoEndTime);
+    document.getElementById('pomo-inputs').style.display = 'flex';
+    document.getElementById('pomo-controls').style.display = 'none';
+    document.getElementById('timer-display').innerText = '00:00';
+    currentPomoSession = null;
+    renderPomoHistory();
+}
 
-    document.getElementById('pomo-inputs').style.display = 'none';
-    document.getElementById('pomo-controls').style.display = 'block';
-    
-runTimer(); // تشغيل العداد الفعلي
+// دالة مساعدة لمسح الجلسة النشطة من الذاكرة
+function clearActiveSession() {
+    localStorage.removeItem('active_pomo_session');
+    localStorage.removeItem('active_pomo_endtime');
 }
 
         function updateTimerDisplay() {
@@ -962,20 +962,17 @@ runTimer(); // تشغيل العداد الفعلي
                 renderPomoHistory();
             }
         }
-        function runTimer() {
-    // إيقاف أي مؤقت قديم لتجنب التكرار
+    function runTimer() {
     if (pomoTimer) clearInterval(pomoTimer);
 
-    // تحديث الشاشة فوراً
     updateTimerDisplay();
 
-    // تشغيل العداد كل ثانية
     pomoTimer = setInterval(() => {
         updateTimerDisplay();
 
         // ⏱️ فحص هل انتهى الوقت؟
         if (Date.now() >= pomoEndTime) {
-            stopPomodoro(false); // إيقاف الجلسة بنجاح
+            stopPomodoro(false); // إيقاف الجلسة وتنفيذ الحفظ المباشر
         }
     }, 1000);
 }
@@ -1089,16 +1086,13 @@ function checkAndRestoreSession() {
         if (pomoEndTime > Date.now()) {
             document.getElementById('pomo-inputs').style.display = 'none';
             document.getElementById('pomo-controls').style.display = 'block';
-            
-            // استئناف العداد (تأكد من استدعاء دالة التحديث الخاصة بك هنا)
-            updateTimerDisplay(); 
+            runTimer(); // 👈 استئناف التشغيل التلقائي للعداد
         } else {
-            // إذا انتهى الوقت والتطبيق مغلق، يمكنك مسح البيانات أو إنهاء الجلسة
-            clearActiveSession();
+            // ⏱️ إذا انتهى الوقت أثناء إغلاق/تحديث الصفحة، يتم إنهاء الجلسة فوراً كـ ناجحة
+            stopPomodoro(false);
         }
     }
 }
-
 // تشغيل الفحص فور فتح الصفحة
 document.addEventListener('DOMContentLoaded', checkAndRestoreSession);
     </script>
