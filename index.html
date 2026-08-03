@@ -876,41 +876,42 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
             document.body.removeChild(link);
         }
 
-        // --- 4. Pomodoro Logic (FIXED: works across tabs using Date.now()) ---
+        // --- 4. Pomo
+          // --- 4. Pomodoro Logic (FIXED: works across tabs using Date.now()) ---
         let pomoTimer = null;
         let pomoEndTime = 0; // Timestamp when timer should end
         let currentPomoSession = null;
         let pomodoroHistory = JSON.parse(localStorage.getItem('om_pomo_history')) || [];
+function startPomodoro() {
+    const nameInput = document.getElementById('session-name');
+    const durationInput = document.getElementById('session-duration');
+    const name = nameInput.value.trim() || 'جلسة مذاكرة';
+    const duration = parseInt(durationInput.value);
+    
+    if(!duration || duration <= 0) { 
+        alert('الرجاء كتابة مدة الجلسة بالدقائق!'); 
+        return; 
+    }
 
-        function startPomodoro() {
-            const nameInput = document.getElementById('session-name');
-            const durationInput = document.getElementById('session-duration');
-            const name = nameInput.value.trim() || 'جلسة مذاكرة';
-            const duration = parseInt(durationInput.value);
-            if(!duration || duration <= 0) { alert('الرجاء كتابة مدة الجلسة بالدقائق!'); return; }
+    // حساب وقت الانتهاء بناءً على التوقيت الحالي
+    pomoEndTime = Date.now() + (duration * 60 * 1000);
+    currentPomoSession = { 
+        id: Date.now(), 
+        name: name, 
+        duration: duration, 
+        startTime: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), 
+        status: 'running' 
+    };
 
-            // Calculate end time based on current timestamp
-            pomoEndTime = Date.now() + (duration * 60 * 1000);
-            currentPomoSession = { 
-                id: Date.now(), 
-                name: name, 
-                duration: duration, 
-                startTime: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), 
-                status: 'running' 
-            };
+    // 💾 حفظ بيانات الجلسة الحالية في localStorage
+    localStorage.setItem('active_pomo_session', JSON.stringify(currentPomoSession));
+    localStorage.setItem('active_pomo_endtime', pomoEndTime);
 
-            document.getElementById('pomo-inputs').style.display = 'none';
-            document.getElementById('pomo-controls').style.display = 'block';
-            updateTimerDisplay();
-
-            // Update every second using Date.now() - accurate even in background tabs
-            pomoTimer = setInterval(() => { 
-                updateTimerDisplay(); 
-                if (Date.now() >= pomoEndTime) {
-                    stopPomodoro(false); 
-                }
-            }, 1000);
-        }
+    document.getElementById('pomo-inputs').style.display = 'none';
+    document.getElementById('pomo-controls').style.display = 'block';
+    
+    updateTimerDisplay(); // أو الدالة التي تبدأ العد لديك
+}
 
         function updateTimerDisplay() {
             const now = Date.now();
@@ -962,6 +963,23 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
                 renderPomoHistory();
             }
         }
+        function runTimer() {
+    // إيقاف أي مؤقت قديم لتجنب التكرار
+    if (pomoTimer) clearInterval(pomoTimer);
+
+    // تحديث الشاشة فوراً
+    updateTimerDisplay();
+
+    // تشغيل العداد كل ثانية
+    pomoTimer = setInterval(() => {
+        updateTimerDisplay();
+
+        // ⏱️ فحص هل انتهى الوقت؟
+        if (Date.now() >= pomoEndTime) {
+            stopPomodoro(false); // إيقاف الجلسة بنجاح
+        }
+    }, 1000);
+}
 
         // --- 5. Digital Notebook Logic ---
         let currentDigitalPage = 1;
@@ -1059,6 +1077,35 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         }
 
         renderTimeMgmt();
+        // دالة الفحص والاسترجاع
+function checkAndRestoreSession() {
+    const savedSession = localStorage.getItem('active_pomo_session');
+    const savedEndTime = localStorage.getItem('active_pomo_endtime');
+
+    if (savedSession && savedEndTime) {
+        pomoEndTime = parseInt(savedEndTime);
+        currentPomoSession = JSON.parse(savedSession);
+
+        // إذا كان الوقت المتبقي لم ينته بعد
+        if (pomoEndTime > Date.now()) {
+            document.getElementById('pomo-inputs').style.display = 'none';
+            document.getElementById('pomo-controls').style.display = 'block';
+            
+            // استئناف العداد (تأكد من استدعاء دالة التحديث الخاصة بك هنا)
+            updateTimerDisplay(); 
+        } else {
+            // إذا انتهى الوقت والتطبيق مغلق، يمكنك مسح البيانات أو إنهاء الجلسة
+            clearActiveSession();
+        }
+    }
+}
+
+// تشغيل الفحص فور فتح الصفحة
+document.addEventListener('DOMContentLoaded', checkAndRestoreSession);
+    </script>
+</body>
+</html>
+
     </script>
 </body>
 </html>
