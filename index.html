@@ -877,224 +877,163 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         }
 
           // --- 4. Pomodoro Logic (FIXED: works across tabs using Date.now()) ---
-        let pomoTimer = null;
-        let pomoEndTime = 0; // Timestamp when timer should end
-        let currentPomoSession = null;
-        let pomodoroHistory = JSON.parse(localStorage.getItem('om_pomo_history')) || [];
-function stopPomodoro(manualCancelled = false) {
-    clearInterval(pomoTimer);
-    pomoTimer = null;
-    
-    if (currentPomoSession) {
-        currentPomoSession.status = manualCancelled ? 'failed' : 'completed';
-        pomodoroHistory.unshift(currentPomoSession);
-        localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
-        
-        if(!manualCancelled) {
-            playAlarmSound();
-            alert('🎉 تهانينا! أنجزت الجلسة بنجاح!');
-        }
-    }
+     
+ let pomoInterval = null;
 
-    // 🧹 مسح بيانات الجلسة النشطة حتى لا تعود عند تحديث الصفحة
-    clearActiveSession();
+        function startPomodoro() {
+            const name = document.getElementById('session-name').value.trim() || "جلسة تركيز";
+            const mins = parseInt(document.getElementById('session-duration').value);
 
-    document.getElementById('pomo-inputs').style.display = 'flex';
-    document.getElementById('pomo-controls').style.display = 'none';
-    document.getElementById('timer-display').innerText = '00:00';
-    currentPomoSession = null;
-    renderPomoHistory();
-}
-
-// دالة مساعدة لمسح الجلسة النشطة من الذاكرة
-function clearActiveSession() {
-    localStorage.removeItem('active_pomo_session');
-    localStorage.removeItem('active_pomo_endtime');
-}
-
-        function updateTimerDisplay() {
-            const now = Date.now();
-            const remaining = Math.max(0, Math.ceil((pomoEndTime - now) / 1000));
-            const minutes = Math.floor(remaining / 60);
-            const seconds = remaining % 60;
-            document.getElementById('timer-display').innerText = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function stopPomodoro(manualCancelled = false) {
-            clearInterval(pomoTimer);
-            pomoTimer = null;
-            if (currentPomoSession) {
-                currentPomoSession.status = manualCancelled ? 'failed' : 'completed';
-                pomodoroHistory.unshift(currentPomoSession);
-                localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
-                if(!manualCancelled) {
-                    playAlarmSound();
-                    alert('🎉 تهانينا! أنجزت الجلسة بنجاح!');
-                }
+            if(!mins || mins <= 0) {
+                alert("يرجى إدخال مدة صحيحة بالجلسة!");
+                return;
             }
+
+            const startTimeStr = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            const endTime = Date.now() + mins * 60 * 1000;
+            const sessionData = { name, endTime, duration: mins, startTime: startTimeStr };
+            localStorage.setItem('om_active_pomo', JSON.stringify(sessionData));
+
+            initPomoUI();
+        }
+
+        function initPomoUI() {
+            const activeSession = JSON.parse(localStorage.getItem('om_active_pomo'));
+            if(!activeSession) return;
+
+            document.getElementById('pomo-inputs').style.display = 'none';
+            document.getElementById('pomo-controls').style.display = 'block';
+
+            if(pomoInterval) clearInterval(pomoInterval);
+
+            pomoInterval = setInterval(() => {
+                const remaining = Math.round((activeSession.endTime - Date.now()) / 1000);
+                if(remaining <= 0) {
+                    clearInterval(pomoInterval);
+                    alert(`🎉 تهانينا! انتهت جلسة: ${activeSession.name}`);
+                    savePomoHistory(activeSession.name, true, activeSession.startTime);
+                    resetPomoUI();
+                } else {
+                    const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+                    const s = (remaining % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                }
+            }, 1000);
+        }
+
+        function stopPomodoro(manual = true) {
+            const activeSession = JSON.parse(localStorage.getItem('om_active_pomo'));
+            if(activeSession) {
+                savePomoHistory(activeSession.name, false, activeSession.startTime);
+            }
+            clearInterval(pomoInterval);
+            resetPomoUI();
+        }
+
+        function resetPomoUI() {
+            localStorage.removeItem('om_active_pomo');
+            document.getElementById('timer-display').innerText = "00:00";
             document.getElementById('pomo-inputs').style.display = 'flex';
             document.getElementById('pomo-controls').style.display = 'none';
-            document.getElementById('timer-display').innerText = '00:00';
-            currentPomoSession = null;
             renderPomoHistory();
         }
 
-        function renderPomoHistory() {
-            const tbody = document.getElementById('sessions-table-body');
-            tbody.innerHTML = '';
-            let completed = 0, failed = 0;
-            pomodoroHistory.forEach((item, idx) => {
-                if(item.status === 'completed') completed++;
-                if(item.status === 'failed') failed++;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${item.name}</td><td class="${item.status === 'completed' ? 'status-completed' : 'status-failed'}">${item.status === 'completed' ? 'ناجحة ✓' : 'غير مكتملة ✗'}</td><td>${item.startTime}</td><td style="text-align: center;"><button class="btn-delete" onclick="deletePomoSession(${idx})">🗑️</button></td>`;
-                tbody.appendChild(tr);
+        function savePomoHistory(name, completed, startTime) {
+            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
+            history.unshift({
+                name: name,
+                completed: completed,
+                time: startTime || new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
             });
-            document.getElementById('completed-count').innerText = completed;
-            document.getElementById('incomplete-count').innerText = failed;
+            localStorage.setItem('om_pomo_history_v2', JSON.stringify(history));
         }
-        function deletePomoSession(index) { pomodoroHistory.splice(index, 1); localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory)); renderPomoHistory(); }
+
+        function deletePomoSession(index) {
+            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('om_pomo_history_v2', JSON.stringify(history));
+            renderPomoHistory();
+        }
+
         function resetPomoDay() {
-            if(confirm('هل تريد مسح جميع سجلات الجلسات للبدء من جديد؟')) {
-                pomodoroHistory = [];
-                localStorage.setItem('om_pomo_history', JSON.stringify(pomodoroHistory));
+            if(confirm("هل أنت تأكد من إعادة الضبط ومسح سجل الجلسات بالكامل؟")) {
+                localStorage.removeItem('om_pomo_history_v2');
                 renderPomoHistory();
             }
         }
-    function runTimer() {
-    if (pomoTimer) clearInterval(pomoTimer);
 
-    updateTimerDisplay();
+        function renderPomoHistory() {
+            const history = JSON.parse(localStorage.getItem('om_pomo_history_v2')) || [];
+            const tbody = document.getElementById('sessions-table-body');
+            tbody.innerHTML = '';
 
-    pomoTimer = setInterval(() => {
-        updateTimerDisplay();
+            let completed = 0;
+            let incomplete = 0;
 
-        // ⏱️ فحص هل انتهى الوقت؟
-        if (Date.now() >= pomoEndTime) {
-            stopPomodoro(false); // إيقاف الجلسة وتنفيذ الحفظ المباشر
+            history.forEach((session, index) => {
+                if (session.completed) completed++;
+                else incomplete++;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${session.name}</td>
+                    <td class="${session.completed ? 'status-completed' : 'status-failed'}">
+                        ${session.completed ? 'مكتملة ✅' : 'غير مكتملة ❌'}
+                    </td>
+                    <td>${session.time}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-delete" onclick="deletePomoSession(${index})" title="حذف">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('completed-count').innerText = completed;
+            document.getElementById('incomplete-count').innerText = incomplete;
         }
-    }, 1000);
-}
 
-        // --- 5. Digital Notebook Logic ---
+        // --- 4. Digital Notebook Logic (100 Pages) ---
         let currentDigitalPage = 1;
-        let digitalNotebookPages = JSON.parse(localStorage.getItem('om_digital_notebook')) || {};
+
+        function changeDigitalPage(delta) {
+            saveDigitalPage(false);
+            currentDigitalPage += delta;
+            if(currentDigitalPage < 1) currentDigitalPage = 1;
+            if(currentDigitalPage > 100) currentDigitalPage = 100;
+            loadDigitalPage();
+        }
+
+        function goToDigitalPage() {
+            const pageInput = document.getElementById('digital-search-input');
+            const pageNum = parseInt(pageInput.value);
+            if(pageNum >= 1 && pageNum <= 100) {
+                saveDigitalPage(false);
+                currentDigitalPage = pageNum;
+                loadDigitalPage();
+                pageInput.value = '';
+            } else {
+                alert('يرجى إدخال رقم صفحة صحيح بين 1 و 100');
+            }
+        }
+
         function loadDigitalPage() {
             document.getElementById('digital-page-num').innerText = `صفحة ${currentDigitalPage} من 100`;
-            document.getElementById('digital-text').value = digitalNotebookPages[currentDigitalPage] || "";
-        }
-        function saveDigitalPage() {
-            digitalNotebookPages[currentDigitalPage] = document.getElementById('digital-text').value;
-            localStorage.setItem('om_digital_notebook', JSON.stringify(digitalNotebookPages));
-            alert(`تم حفظ الصفحة ${currentDigitalPage} بنجاح 💾`);
-        }
-        function saveDigitalPageSilent() {
-            digitalNotebookPages[currentDigitalPage] = document.getElementById('digital-text').value;
-            localStorage.setItem('om_digital_notebook', JSON.stringify(digitalNotebookPages));
-        }
-        function changeDigitalPage(delta) {
-            saveDigitalPageSilent();
-            let newPage = currentDigitalPage + delta;
-            if (newPage >= 1 && newPage <= 100) { currentDigitalPage = newPage; loadDigitalPage(); }
-        }
-        function goToDigitalPage() {
-            const input = document.getElementById('digital-search-input');
-            const page = parseInt(input.value);
-            if (page >= 1 && page <= 100) { saveDigitalPageSilent(); currentDigitalPage = page; loadDigitalPage(); input.value = ''; }
+            const key = `om_digital_notebook_${currentDigitalPage}`;
+            document.getElementById('digital-text').value = localStorage.getItem(key) || "";
         }
 
-        // --- 6. Time Management Logic ---
-        let timeMgmtTasks = JSON.parse(localStorage.getItem('om_time_mgmt')) || {
-            'must-do': [],
-            'should-do': [],
-            'good-to-do': []
-        };
-
-        function saveTimeMgmt() { 
-            localStorage.setItem('om_time_mgmt', JSON.stringify(timeMgmtTasks)); 
+        function saveDigitalPage(showAlert = true) {
+            const key = `om_digital_notebook_${currentDigitalPage}`;
+            const text = document.getElementById('digital-text').value;
+            localStorage.setItem(key, text);
+            if(showAlert) alert('تم حفظ الصفحة بنجاح! 💾');
         }
 
-        function renderTimeMgmt() {
-            ['must-do', 'should-do', 'good-to-do'].forEach(cat => {
-                const list = document.getElementById(`${cat}-list`);
-                if (!list) return;
-
-                list.innerHTML = '';
-                timeMgmtTasks[cat].forEach((task, idx) => {
-                    const taskText = typeof task === 'string' ? task : task.text;
-                    const isCompleted = typeof task === 'object' && task.completed;
-
-                    const li = document.createElement('li');
-                    li.className = 'task-item';
-
-                    li.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" ${isCompleted ? 'checked' : ''} onchange="toggleTask('${cat}', ${idx})">
-                            <span style="${isCompleted ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${taskText}</span>
-                        </div>
-                        <button class="btn-delete" onclick="deleteTask('${cat}', ${idx})" title="حذف المهمة">🗑️</button>
-                    `;
-                    list.appendChild(li);
-                });
-            });
+        // Initialize active pomodoro if exists on page refresh
+        if (localStorage.getItem('om_active_pomo')) {
+            initPomoUI();
         }
-
-        function addTask(category) {
-            const input = document.getElementById(`${category}-input`);
-            if (input && input.value.trim() !== "") {
-                timeMgmtTasks[category].push({
-                    text: input.value.trim(),
-                    completed: false
-                });
-                input.value = "";
-                saveTimeMgmt();
-                renderTimeMgmt();
-            }
-        }
-
-        function toggleTask(category, index) {
-            if (typeof timeMgmtTasks[category][index] === 'string') {
-                timeMgmtTasks[category][index] = {
-                    text: timeMgmtTasks[category][index],
-                    completed: true
-                };
-            } else {
-                timeMgmtTasks[category][index].completed = !timeMgmtTasks[category][index].completed;
-            }
-            saveTimeMgmt();
-            renderTimeMgmt();
-        }
-
-        function deleteTask(category, index) {
-            timeMgmtTasks[category].splice(index, 1);
-            saveTimeMgmt();
-            renderTimeMgmt();
-        }
-
-        renderTimeMgmt();
-        // دالة الفحص والاسترجاع
-function checkAndRestoreSession() {
-    const savedSession = localStorage.getItem('active_pomo_session');
-    const savedEndTime = localStorage.getItem('active_pomo_endtime');
-
-    if (savedSession && savedEndTime) {
-        pomoEndTime = parseInt(savedEndTime);
-        currentPomoSession = JSON.parse(savedSession);
-
-        // إذا كان الوقت المتبقي لم ينته بعد
-        if (pomoEndTime > Date.now()) {
-            document.getElementById('pomo-inputs').style.display = 'none';
-            document.getElementById('pomo-controls').style.display = 'block';
-            runTimer(); // 👈 استئناف التشغيل التلقائي للعداد
-        } else {
-            // ⏱️ إذا انتهى الوقت أثناء إغلاق/تحديث الصفحة، يتم إنهاء الجلسة فوراً كـ ناجحة
-            stopPomodoro(false);
-        }
-    }
-}
-// تشغيل الفحص فور فتح الصفحة
-document.addEventListener('DOMContentLoaded', checkAndRestoreSession);
+        loadDigitalPage();
     </script>
 
 </body>
