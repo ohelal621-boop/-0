@@ -140,6 +140,34 @@
         .rules-box h3 { color: var(--accent-indigo); margin-bottom: 15px; font-size: 1.3rem; }
         .rules-box ol { padding-right: 20px; line-height: 2; color: var(--text-secondary); }
         .rules-box ol li { margin-bottom: 8px; }
+        // المربع اللي في اداره الوقت 
+        /* تنسيق عنصر المهمة */
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    transition: all 0.3s ease;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* شكل النص عند التحديد */
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #888; /* تغيير اللون للرمادي لبيان الإنجاز */
+}
+
+/* حجم المربع والتفاعل معه */
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
     </style>
 <base target="_blank">
 </head>
