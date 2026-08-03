@@ -1035,39 +1035,79 @@ fadl:"من قالها كفاه الله ما أهمه من أمور الدنيا
         }
         loadDigitalPage();
         // اداره الوقت 
-            let timeMgmtTasks = JSON.parse(localStorage.getItem('om_time_mgmt')) || {
-            'must-do': [],
-            'should-do': [],
-            'good-to-do': []
-        };
-        function saveTimeMgmt() { localStorage.setItem('om_time_mgmt', JSON.stringify(timeMgmtTasks)); }
-        function renderTimeMgmt() {
-            ['must-do', 'should-do', 'good-to-do'].forEach(cat => {
-                const list = document.getElementById(`${cat}-list`);
-                list.innerHTML = '';
-                timeMgmtTasks[cat].forEach((task, idx) => {
-                    const li = document.createElement('li');
-                    li.className = 'task-item';
-                    li.innerHTML = `<span>${task}</span><button class="btn-delete" onclick="deleteTask('${cat}', ${idx})" title="حذف المهمة">🗑️</button>`;
-                    list.appendChild(li);
-                });
-            });
-        }
-        function addTask(category) {
-            const input = document.getElementById(`${category}-input`);
-            if(input.value.trim() !== "") {
-                timeMgmtTasks[category].push(input.value.trim());
-                input.value = "";
-                saveTimeMgmt();
-                renderTimeMgmt();
-            }
-        }
-        function deleteTask(category, index) {
-            timeMgmtTasks[category].splice(index, 1);
-            saveTimeMgmt();
-            renderTimeMgmt();
-        }
+      // تحميل البيانات أو تهيئة الهيكل إذا كانت جديدة
+let timeMgmtTasks = JSON.parse(localStorage.getItem('om_time_mgmt')) || {
+    'must-do': [],
+    'should-do': [],
+    'good-to-do': []
+};
+
+// حفظ البيانات في localStorage
+function saveTimeMgmt() { 
+    localStorage.setItem('om_time_mgmt', JSON.stringify(timeMgmtTasks)); 
+}
+
+// عرض المهام
+function renderTimeMgmt() {
+    ['must-do', 'should-do', 'good-to-do'].forEach(cat => {
+        const list = document.getElementById(`${cat}-list`);
+        list.innerHTML = '';
+        timeMgmtTasks[cat].forEach((taskObj, idx) => {
+            // التعامل مع البيانات سواء كانت نص قديم أو كائن جديد (Object)
+            const taskText = typeof taskObj === 'string' ? taskObj : taskObj.text;
+            const isCompleted = typeof taskObj === 'object' ? taskObj.completed : false;
+
+            const li = document.createElement('li');
+            li.className = `task-item ${isCompleted ? 'completed' : ''}`;
+            
+            li.innerHTML = `
+                <div class="task-content">
+                    <input type="checkbox" 
+                           class="task-checkbox" 
+                           ${isCompleted ? 'checked' : ''} 
+                           onchange="toggleTask('${cat}', ${idx})">
+                    <span class="task-text">${taskText}</span>
+                </div>
+                <button class="btn-delete" onclick="deleteTask('${cat}', ${idx})" title="حذف المهمة">🗑️</button>
+            `;
+            list.appendChild(li);
+        });
+    });
+}
+
+// إضافة مهمة جديدة (تُحفظ ككائن يحتوي النص وحالة الإنجاز)
+function addTask(category) {
+    const input = document.getElementById(`${category}-input`);
+    const text = input.value.trim();
+    if (text !== "") {
+        timeMgmtTasks[category].push({ text: text, completed: false });
+        input.value = "";
+        saveTimeMgmt();
         renderTimeMgmt();
+    }
+}
+
+// تغيير حالة المهمة (مكتملة / غير مكتملة)
+function toggleTask(category, index) {
+    // التأكد من تحويل المهمة إلى كائن إذا كانت مجرد نص
+    if (typeof timeMgmtTasks[category][index] === 'string') {
+        timeMgmtTasks[category][index] = { text: timeMgmtTasks[category][index], completed: false };
+    }
+    
+    timeMgmtTasks[category][index].completed = !timeMgmtTasks[category][index].completed;
+    saveTimeMgmt();
+    renderTimeMgmt();
+}
+
+// حذف المهمة
+function deleteTask(category, index) {
+    timeMgmtTasks[category].splice(index, 1);
+    saveTimeMgmt();
+    renderTimeMgmt();
+}
+
+// تشغيل الدالة أول مرة
+renderTimeMgmt();
     </script>
 
 </body>
